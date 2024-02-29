@@ -1,0 +1,9 @@
+me\foksha\core\Core.class
+me\foksha\core\combat\CombatHandler.class
+me\foksha\core\combat\CombatHandler$1.class
+me\foksha\core\combat\listener\CombatLogMessages.class
+me\foksha\core\util\Translation.class
+me\foksha\core\combat\bossbar\BossBarTask.class
+me\foksha\core\combat\listener\CombatListener.class
+me\foksha\core\combat\listener\CommandListener.class
+me\foksha\core\commands\CombatTagCommand.class
