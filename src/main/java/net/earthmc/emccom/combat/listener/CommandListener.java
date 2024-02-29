@@ -1,6 +1,6 @@
-package me.foksha.core.combat.listener;
+package net.earthmc.emccom.combat.listener;
 import com.google.common.collect.ImmutableSet;
-import me.foksha.core.combat.CombatHandler;
+import net.earthmc.emccom.combat.CombatHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

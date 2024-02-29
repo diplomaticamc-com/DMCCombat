@@ -1,4 +1,4 @@
-package me.foksha.core.combat.listener;
+package net.earthmc.emccom.combat.listener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
