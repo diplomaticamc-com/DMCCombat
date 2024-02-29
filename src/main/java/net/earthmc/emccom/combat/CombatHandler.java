@@ -48,7 +48,7 @@ public class CombatHandler {
                     removePlayerFromCombatTeam(player);
                 }
             }
-        }.runTaskTimerAsynchronously(Core.getInstance(), 10L, 10L);
+        }.runTaskTimerAsynchronously(EMCCOM.getInstance(), 10L, 10L);
     }
 
     public static void applyTag(Player player) {
