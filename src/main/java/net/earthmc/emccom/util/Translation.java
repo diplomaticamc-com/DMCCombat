@@ -17,7 +17,7 @@ public final class Translation {
 
     private static HashMap<String, String> translations;
     public static boolean loadStrings() {
-        File languageDirectory = new File(Core.getInstance().getDataFolder(), "languages/");
+        File languageDirectory = new File(EMCCOM.getInstance().getDataFolder(), "languages/");
 
         // Check if the languages directory exists
         if (!languageDirectory.exists()) {
@@ -26,7 +26,7 @@ public final class Translation {
             // Get the plugin jar file
             Method getFile;
             try {
-                getFile = Core.class.getSuperclass().getDeclaredMethod("getFile");
+                getFile = EMCCOM.class.getSuperclass().getDeclaredMethod("getFile");
             } catch(NoSuchMethodException e) {
                 e.printStackTrace();
                 return false;
@@ -37,7 +37,7 @@ public final class Translation {
             // Open the jar file
             File jarFile;
             try {
-                jarFile = (File)getFile.invoke(Core.getInstance());
+                jarFile = (File)getFile.invoke(EMCCOM.getInstance());
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
                 return false;
@@ -57,7 +57,7 @@ public final class Translation {
             while(entries.hasMoreElements()) {
                 final String name = entries.nextElement().getName();
                 if (name.startsWith("languages/")) {
-                    Core.getInstance().saveResource(name, false);
+                    EMCCOM.getInstance().saveResource(name, false);
                 }
             }
 
@@ -71,13 +71,13 @@ public final class Translation {
         }
 
         // Get the language from the config
-        String locale = Core.getInstance().getConfig().getString("locale");
+        String locale = EMCCOM.getInstance().getConfig().getString("locale");
         if(locale == null) {
             locale = "en_US";
         }
 
         // Load the language file
-        File languageFile = new File(Core.getInstance().getDataFolder(), "languages/" + locale + ".yml");
+        File languageFile = new File(EMCCOM.getInstance().getDataFolder(), "languages/" + locale + ".yml");
         if(!languageFile.exists()) {
             return false;
         }
