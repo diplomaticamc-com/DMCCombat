@@ -2,8 +2,8 @@ name: EMCCOM
 version: ${project.version}
 main: net.earthmc.emccom.EMCCOM
 api-version: 1.19
-authors: [ Windows10Laptop, CorruptedGreed ]
-description: A combat tag plugin!
+authors: [ Foksha, Error110, Windows10Laptop, CorruptedGreed ]
+description: A combat plugin!
 depend:
   - Towny
 commands:
