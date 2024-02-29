@@ -5,7 +5,7 @@ import net.earthmc.emccom.combat.bossbar.BossBarTask;
 import net.earthmc.emccom.combat.listener.CombatListener;
 import net.earthmc.emccom.combat.listener.CommandListener;
 import net.earthmc.emccom.commands.CombatTagCommand;
-import net.earthmc.util.Translation;
+import net.earthmc.emccom.util.Translation;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
