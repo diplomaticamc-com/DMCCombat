@@ -85,7 +85,7 @@ public class CombatListener implements Listener {
             damager = (Player) event.getDamager();
             //ItemStack weapon = damager.getInventory().getItemInMainHand();
             //if (isCombatWeapon((weapon.getType()))){
-            //    CombatHandler.applyTag(damager);
+            CombatHandler.applyTag(damager);
 
         } else if (event.getDamager() instanceof Projectile) {
             ProjectileSource shooter = ((Projectile) event.getDamager()).getShooter();
