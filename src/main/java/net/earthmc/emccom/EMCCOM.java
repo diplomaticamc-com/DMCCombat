@@ -1,11 +1,11 @@
-package me.foksha.core;
+package net.earthmc.emccom;
 
-import me.foksha.core.combat.CombatHandler;
-import me.foksha.core.combat.bossbar.BossBarTask;
-import me.foksha.core.combat.listener.CombatListener;
-import me.foksha.core.combat.listener.CommandListener;
-import me.foksha.core.commands.CombatTagCommand;
-import me.foksha.core.util.Translation;
+import net.earthmc.emccom.combat.CombatHandler;
+import net.earthmc.emccom.combat.bossbar.BossBarTask;
+import net.earthmc.emccom.combat.listener.CombatListener;
+import net.earthmc.emccom.combat.listener.CommandListener;
+import net.earthmc.emccom.commands.CombatTagCommand;
+import net.earthmc.util.Translation;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,11 +13,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public final class Core extends JavaPlugin {
+public final class EMCCOM extends JavaPlugin {
 
-    private static Core instance;
+    private static EMCCOM instance;
 
-    public static Core getInstance() {
+    public static EMCCOM getInstance() {
         return instance;
     }
 

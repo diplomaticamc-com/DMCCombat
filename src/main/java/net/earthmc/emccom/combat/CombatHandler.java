@@ -1,7 +1,7 @@
-package me.foksha.core.combat;
+package net.earthmc.emccom.combat;
 
 import com.palmergames.util.TimeTools;
-import me.foksha.core.Core;
+import net.earthmc.emccom.EMCCOM;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

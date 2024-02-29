@@ -1,6 +1,6 @@
-package me.foksha.core.commands;
+package net.earthmc.emccom.commands;
 
-import me.foksha.core.combat.CombatHandler;
+import net.earthmc.emccom.combat.CombatHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

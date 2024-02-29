@@ -1,6 +1,6 @@
-package me.foksha.core.util;
+package net.earthmc.emccom.util;
 
-import me.foksha.core.Core;
+import net.earthmc.emccom.EMCCOM;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

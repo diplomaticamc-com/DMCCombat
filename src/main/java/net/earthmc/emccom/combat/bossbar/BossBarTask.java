@@ -1,6 +1,6 @@
-package me.foksha.core.combat.bossbar;
+package net.earthmc.emccom.combat.bossbar;
 
-import me.foksha.core.combat.CombatHandler;
+import net.earthmc.emccom.combat.CombatHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
