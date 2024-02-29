@@ -42,8 +42,8 @@ public class CombatListener implements Listener {
     List<String> messagesList = Arrays.asList(
             "used Combat Log! It's a One-Hit KO!",
             "was killed for logging out in combat.",
-            "encountered connection issues and DIED.",
-            "surrendered to the disconnect button."
+            "surrendered to the disconnect button.",
+            "combat-logged! Shame on them!"
     );
 
     Random random = new Random();
@@ -108,7 +108,6 @@ public class CombatListener implements Listener {
         CombatHandler.applyTag(damaged);
     }
     private boolean isCombatWeapon(Material material) {
-        // Define the set of weapon types that trigger the combat tag
         Set<Material> combatWeapons = EnumSet.of(
                 Material.DIAMOND_SWORD,
                 Material.GOLDEN_SWORD,
@@ -123,7 +122,7 @@ public class CombatListener implements Listener {
                 Material.DIAMOND_AXE,
                 Material.NETHERITE_AXE,
                 Material.TRIDENT
-                // Add more weapon types as needed
+                
         );
 
         return combatWeapons.contains(material);
