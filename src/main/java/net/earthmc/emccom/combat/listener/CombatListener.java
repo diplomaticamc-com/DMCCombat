@@ -1,9 +1,9 @@
-package me.foksha.core.combat.listener;
+package net.earthmc.emccom.combat.listener;
 
 import com.palmergames.bukkit.towny.event.player.PlayerKilledPlayerEvent;
 import com.palmergames.util.TimeTools;
 import com.sun.tools.classfile.Instruction;
-import me.foksha.core.combat.CombatHandler;
+import net.earthmc.emccom.combat.CombatHandler;
 import com.google.common.collect.ImmutableSet;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.damage.TownyPlayerDamagePlayerEvent;
@@ -11,7 +11,7 @@ import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.TownyWorld;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
-import me.foksha.core.combat.bossbar.BossBarTask;
+import net.earthmc.emccom.combat.bossbar.BossBarTask;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
