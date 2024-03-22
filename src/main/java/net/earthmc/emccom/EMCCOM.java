@@ -32,7 +32,7 @@ public final class EMCCOM extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        log.info("§e======= §a TownyCombatTag §e=======");
+        log.info("§e======= §a EMCCOM §e=======");
 
         Translation.loadStrings();
 
@@ -40,7 +40,7 @@ public final class EMCCOM extends JavaPlugin {
         setupCommands();
         runTasks();
 
-        log.info("TownyCombatTag has been loaded.");
+        log.info("EMCCOM has been loaded.");
     }
 
     private void setupListeners() {
@@ -60,7 +60,7 @@ public final class EMCCOM extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        log.info(ChatColor.RED + ChatColor.BOLD.toString() + "TownyCombatTag has been disabled.");
+        log.info(ChatColor.RED + ChatColor.BOLD.toString() + "EMCCOM has been disabled.");
     }
 
 }
