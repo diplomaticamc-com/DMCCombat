@@ -2,7 +2,6 @@ package net.earthmc.emccom.combat.listener;
 
 import com.palmergames.bukkit.towny.event.player.PlayerKilledPlayerEvent;
 import com.palmergames.util.TimeTools;
-import com.sun.tools.classfile.Instruction;
 import net.earthmc.emccom.combat.CombatHandler;
 import com.google.common.collect.ImmutableSet;
 import com.palmergames.bukkit.towny.TownyAPI;

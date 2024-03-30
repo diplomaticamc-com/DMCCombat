@@ -5,6 +5,7 @@ import net.earthmc.emccom.combat.bossbar.BossBarTask;
 import net.earthmc.emccom.combat.listener.CombatListener;
 import net.earthmc.emccom.combat.listener.CommandListener;
 import net.earthmc.emccom.commands.CombatTagCommand;
+import net.earthmc.emccom.commands.CombatPrefCommand;
 import net.earthmc.emccom.util.Translation;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -51,6 +52,7 @@ public final class EMCCOM extends JavaPlugin {
     private void setupCommands() {
         log.info("§5= §bRegistering Commands");
         Objects.requireNonNull(getCommand("combattag")).setExecutor(new CombatTagCommand());
+        Objects.requireNonNull(getCommand("combatpref")).setExecutor(new CombatPrefCommand());
     }
 
     private void runTasks() {
