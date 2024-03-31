@@ -20,7 +20,7 @@ public class CommandListener implements Listener {
         Player player = event.getPlayer();
 
         // Check if the player is in combat and doesn't have bypass permission
-        if (CombatHandler.isTagged(player) && !player.hasPermission("earthpol.combattag.bypass")) {
+        if (CombatHandler.isTagged(player) && !player.hasPermission("emccom.combattag.bypass")) {
             String message = event.getMessage().substring(1); // Remove leading "/"
 
             // Check if the command is blacklisted
