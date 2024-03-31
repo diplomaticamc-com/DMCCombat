@@ -14,4 +14,4 @@ Features:
  - Configurable combat timer (30s currently)
  - Prevents the usage of a configurable set of commands (such as teleportation)
 
-Originally made by Ludwig_H for NebulaMC, repurposed and modernized by Foksha, Error110 and Windows10Laptop for more modern towny servers!
+Originally made by Ludwig_H for NebulaMC, repurposed and modernized by Foksha, Error110, CorruptedGreed Windows10Laptop for more modern towny servers!
