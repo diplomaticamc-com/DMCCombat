@@ -4,8 +4,10 @@ import net.earthmc.emccom.combat.CombatHandler;
 import net.earthmc.emccom.combat.bossbar.BossBarTask;
 import net.earthmc.emccom.combat.listener.CombatListener;
 import net.earthmc.emccom.combat.listener.CommandListener;
+import net.earthmc.emccom.combat.listener.PlayerItemCooldownListener;
 import net.earthmc.emccom.commands.CombatTagCommand;
 import net.earthmc.emccom.commands.CombatPrefCommand;
+import net.earthmc.emccom.config.Config;
 import net.earthmc.emccom.util.Translation;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -37,6 +39,8 @@ public final class EMCCOM extends JavaPlugin {
 
         Translation.loadStrings();
 
+        Config.init(getConfig());
+        saveConfig();
         setupListeners();
         setupCommands();
         runTasks();
@@ -47,6 +51,7 @@ public final class EMCCOM extends JavaPlugin {
     private void setupListeners() {
         getServer().getPluginManager().registerEvents(new CombatListener(), this);
         getServer().getPluginManager().registerEvents(new CommandListener(),this);
+        getServer().getPluginManager().registerEvents(new PlayerItemCooldownListener(), this);
     }
 
     private void setupCommands() {
