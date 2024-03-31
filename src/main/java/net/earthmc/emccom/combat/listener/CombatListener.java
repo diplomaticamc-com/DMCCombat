@@ -60,21 +60,16 @@ public class CombatListener implements Listener {
         ResidentMetadataManager rmm = new ResidentMetadataManager();
         CombatPref combatPrefOfAttacker = rmm.getResidentCombatPref(attackerAsResident);
 
-        if (!world.isPVP()) {
+        if (!world.isPVP() || !CombatHandler.isTagged(victim)) {
             return;
         }
 
-        if (!CombatHandler.isTagged(victim)) {
-            return;
-        }
-
-        if (CombatHandler.isTagged(victim)) { // If the victim is tagged, runs through this
-            if(combatPrefOfAttacker == UNSAFE) // If the player hitting the victim has UNSAFE, then they can enter tag
-                event.setCancelled(false);
-            else if(CombatHandler.isTagged(attacker)) // If the player is already in tag, maintain combat
-                event.setCancelled(false);
-            else // If the player does not have UNSAFE, and is not in combat, then return
-                return;
+        if (CombatHandler.isTagged(victim)) { // If the victim is tagged
+            if (combatPrefOfAttacker == UNSAFE || CombatHandler.isTagged(attacker)) {
+                event.setCancelled(false); // Allow combat if attacker is UNSAFE or already tagged
+            } else {
+                return; // Otherwise, return without allowing combat
+            }
         }
         event.setCancelled(false);
     }
