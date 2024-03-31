@@ -5,11 +5,10 @@ import net.earthmc.emccom.combat.bossbar.BossBarTask;
 import net.earthmc.emccom.combat.listener.CombatListener;
 import net.earthmc.emccom.combat.listener.CommandListener;
 import net.earthmc.emccom.combat.listener.PlayerItemCooldownListener;
-import net.earthmc.emccom.commands.CombatTagCommand;
 import net.earthmc.emccom.commands.CombatPrefCommand;
+import net.earthmc.emccom.commands.CombatTagCommand;
 import net.earthmc.emccom.config.Config;
 import net.earthmc.emccom.util.Translation;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,7 +23,7 @@ public final class EMCCOM extends JavaPlugin {
         return instance;
     }
 
-    private static Logger log = Bukkit.getLogger();
+    private static final Logger log = Bukkit.getLogger();
 
     public CombatHandler combatHandler;
 
@@ -67,7 +66,7 @@ public final class EMCCOM extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        log.info(ChatColor.RED + ChatColor.BOLD.toString() + "EMCCOM has been disabled.");
+        log.warning("EMCCOM has been disabled.");
     }
 
 }
