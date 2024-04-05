@@ -50,7 +50,7 @@ public class CombatPrefCommand implements TabExecutor {
         ResidentMetadataManager rmm = new ResidentMetadataManager();
         rmm.setResidentCombatPref(resident, combatPref);
 
-        player.sendMessage(Component.text("Successfully changed your combat preference to" + combatPref, NamedTextColor.GREEN));
+        player.sendMessage(Component.text("Successfully changed your combat preference to " + combatPref, NamedTextColor.GREEN));
 
         return true;
     }
