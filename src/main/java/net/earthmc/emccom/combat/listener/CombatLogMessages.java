@@ -21,7 +21,7 @@ public class CombatLogMessages {
         return messages.get(randomIndex);
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         // Example usage
         List<String> messagesList = Arrays.asList(
                 "used Combat Log! It's a One-Hit KO!",
@@ -37,5 +37,5 @@ public class CombatLogMessages {
         // Get and print a random message
         String randomMessage = messageSelector.getRandomMessage();
         System.out.println("Random Message: " + randomMessage);
-    }
+    }*/
 }
