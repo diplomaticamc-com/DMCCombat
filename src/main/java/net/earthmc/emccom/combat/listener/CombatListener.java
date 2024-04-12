@@ -91,6 +91,7 @@ public class CombatListener implements Listener {
                 return;
 
             damager = (Player) shooter;
+            CombatHandler.applyTag(damager);
         }
 
         else {
