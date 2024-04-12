@@ -45,7 +45,7 @@ public class CombatHandler {
                     player.sendMessage(ChatColor.GREEN + "You are no longer in combat.");
 
                     // Remove the player from the combat tagged team
-                   // removePlayerFromCombatTeam(player);
+                    // removePlayerFromCombatTeam(player);
                 }
             }
         }.runTaskTimerAsynchronously(EMCCOM.getInstance(), 10L, 10L);
@@ -56,10 +56,10 @@ public class CombatHandler {
             player.closeInventory(Reason.PLUGIN);
             player.sendMessage(ChatColor.RED + "You have been combat tagged for " + (TAG_TIME / 1000) + " seconds! Do not log out or you will get killed instantly.");
 
-            // Create or get the combat tagged team
-            //Team combatTaggedTeam = getCombatTaggedTeam();
-            // Add the player to the combat tagged team
-            //addPlayerToCombatTeam(player, combatTaggedTeam);
+            /* Create or get the combat tagged team
+            Team combatTaggedTeam = getCombatTaggedTeam();
+             Add the player to the combat tagged team
+            addPlayerToCombatTeam(player, combatTaggedTeam);*/
         }
 
         combatTags.put(player.getUniqueId(), System.currentTimeMillis() + TAG_TIME);
@@ -82,35 +82,35 @@ public class CombatHandler {
 
         return combatTags.get(player.getUniqueId()) - System.currentTimeMillis();
     }
+}
+    /*private static Team getCombatTaggedTeam() {
+        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+        Scoreboard mainScoreboard = scoreboardManager.getMainScoreboard();
 
-    //private static Team getCombatTaggedTeam() {
-        //ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
-       // Scoreboard mainScoreboard = scoreboardManager.getMainScoreboard();
+        Team combatTaggedTeam = mainScoreboard.getTeam("CombatTagged");
+        if (combatTaggedTeam == null) {
+            combatTaggedTeam = mainScoreboard.registerNewTeam("CombatTagged");
+            combatTaggedTeam.setSuffix(ChatColor.RED.toString() + " ⚔");
+        }
 
-       // Team combatTaggedTeam = mainScoreboard.getTeam("CombatTagged");
-      //  if (combatTaggedTeam == null) {
-      //      combatTaggedTeam = mainScoreboard.registerNewTeam("CombatTagged");
-      //      combatTaggedTeam.setSuffix(ChatColor.RED.toString() + " ⚔");
-      //  }
+        return combatTaggedTeam;
+    }
 
-      //  return combatTaggedTeam;
-   // }
+    private static void addPlayerToCombatTeam(Player player, Team team) {
+        team.addEntry(player.getName());
 
- //   private static void addPlayerToCombatTeam(Player player, Team team) {
- //       team.addEntry(player.getName());
+         Set the player's scoreboard
+        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+    }
 
- //       // Set the player's scoreboard
- //       player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
- //   }
-
-  //  private static void removePlayerFromCombatTeam(Player player) {
-   //     Team combatTaggedTeam = getCombatTaggedTeam();
-   //     if (combatTaggedTeam != null) {
-   //         combatTaggedTeam.removeEntry(player.getName());
+    private static void removePlayerFromCombatTeam(Player player) {
+        Team combatTaggedTeam = getCombatTaggedTeam();
+        if (combatTaggedTeam != null) {
+            combatTaggedTeam.removeEntry(player.getName());
 
 
-            // Set the player's scoreboard (optional, if you want to reset the scoreboard)
+             Set the player's scoreboard (optional, if you want to reset the scoreboard)
             player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         }
     }
-}
+}*/
