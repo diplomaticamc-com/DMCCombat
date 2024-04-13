@@ -13,7 +13,7 @@ import java.util.Set;
 public class CommandListener implements Listener {
 
     private static final Set<String> BLACKLISTED_COMMANDS = ImmutableSet.of(
-            "t spawn", "n spawn", "warp", "trade", "res spawn", "home", "tradesystem:trade","town spawn","nation spawn","resident spawn","homes","towny:nation spawn","towny:town spawn","towny:resident spawn","player spawn","towny:player spawn","towny:n spawn","towny:nat spawn","towny:tw spawn","towny:res spawn","towny:t spawn");
+            "t spawn", "n spawn", "warp", "trade", "res spawn", "home", "tradesystem:trade","town spawn","nation spawn","resident spawn","homes","towny:nation spawn","towny:town spawn","towny:resident spawn","player spawn","towny:player spawn","towny:n spawn","towny:nat spawn","towny:tw spawn","towny:res spawn","towny:t spawn","suicide");
 
     @EventHandler
     public void onPreProcessCommand(PlayerCommandPreprocessEvent event) {
