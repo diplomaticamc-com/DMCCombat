@@ -13,3 +13,4 @@ commands:
     permission-message: You do not have permission to run this command!
     usage: /combattag help
   combatpref:
+  spawnprotpref:
