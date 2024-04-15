@@ -5,8 +5,10 @@ import net.earthmc.emccom.combat.bossbar.BossBarTask;
 import net.earthmc.emccom.combat.listener.CombatListener;
 import net.earthmc.emccom.combat.listener.CommandListener;
 import net.earthmc.emccom.combat.listener.PlayerItemCooldownListener;
+import net.earthmc.emccom.combat.listener.SpawnProtectionListener;
 import net.earthmc.emccom.commands.CombatPrefCommand;
 import net.earthmc.emccom.commands.CombatTagCommand;
+import net.earthmc.emccom.commands.SpawnProtPrefCommand;
 import net.earthmc.emccom.config.Config;
 import net.earthmc.emccom.util.Translation;
 import org.bukkit.Bukkit;
@@ -51,12 +53,14 @@ public final class EMCCOM extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CombatListener(), this);
         getServer().getPluginManager().registerEvents(new CommandListener(),this);
         getServer().getPluginManager().registerEvents(new PlayerItemCooldownListener(), this);
+        getServer().getPluginManager().registerEvents(new SpawnProtectionListener(), this);
     }
 
     private void setupCommands() {
         log.info("§5= §bRegistering Commands");
         Objects.requireNonNull(getCommand("combattag")).setExecutor(new CombatTagCommand());
         Objects.requireNonNull(getCommand("combatpref")).setExecutor(new CombatPrefCommand());
+        Objects.requireNonNull(getCommand("spawnprotpref")).setExecutor(new SpawnProtPrefCommand());
     }
 
     private void runTasks() {
