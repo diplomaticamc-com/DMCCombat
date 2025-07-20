@@ -1,5 +1,6 @@
 package net.earthmc.emccom;
 
+import com.georg.newbieprotection.NewbieProtection;
 import net.earthmc.emccom.combat.CombatHandler;
 import net.earthmc.emccom.combat.bossbar.BossBarTask;
 import net.earthmc.emccom.combat.listener.CombatListener;
@@ -12,12 +13,15 @@ import net.earthmc.emccom.commands.SpawnProtPrefCommand;
 import net.earthmc.emccom.config.Config;
 import net.earthmc.emccom.util.Translation;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 import java.util.logging.Logger;
 
 public final class EMCCOM extends JavaPlugin {
+
+    private NewbieProtection newbieProtection;
 
     private static EMCCOM instance;
 
@@ -36,7 +40,7 @@ public final class EMCCOM extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        log.info("§e======= §a EMCCOM §e=======");
+        log.info("§e======= §a EMCCOM (DMC Fork) §e=======");
 
         Translation.loadStrings();
 
@@ -45,14 +49,20 @@ public final class EMCCOM extends JavaPlugin {
         setupListeners();
         setupCommands();
         runTasks();
+        Plugin plugin = Bukkit.getPluginManager().getPlugin("NewbieProtection");
+        if (plugin instanceof NewbieProtection && plugin.isEnabled()) {
+            this.newbieProtection = (NewbieProtection) plugin;
+        }
 
-        log.info("EMCCOM has been loaded.");
+
+
+        log.info("EMCCOM (DMC Fork) has been loaded.");
     }
 
     private void setupListeners() {
-        getServer().getPluginManager().registerEvents(new CombatListener(), this);
+        getServer().getPluginManager().registerEvents(new CombatListener(newbieProtection), this);
         getServer().getPluginManager().registerEvents(new CommandListener(),this);
-        getServer().getPluginManager().registerEvents(new PlayerItemCooldownListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerItemCooldownListener(this), this);
         getServer().getPluginManager().registerEvents(new SpawnProtectionListener(), this);
     }
 

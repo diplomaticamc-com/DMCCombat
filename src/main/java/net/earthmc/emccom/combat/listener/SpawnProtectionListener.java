@@ -9,7 +9,7 @@ import net.earthmc.emccom.manager.ResidentMetadataManager;
 import net.earthmc.emccom.object.SpawnProtPref;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Chunk;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SpawnProtectionListener implements Listener {
-    private final Map<UUID, Integer> playerChunkCountMap = new HashMap<>();
+    private final Map<UUID, Integer> playerBlockCountMap = new HashMap<>();
 
-    private static final int CHUNK_DISTANCE = 8;
+    private static final int BLOCK_DISTANCE = 32;
 
     @EventHandler
     public void onSpawnEvent(SpawnEvent event) {
@@ -33,7 +33,7 @@ public class SpawnProtectionListener implements Listener {
             Player player = event.getPlayer();
             UUID playerId = player.getUniqueId();
 
-            playerChunkCountMap.put(playerId, CHUNK_DISTANCE);
+            playerBlockCountMap.put(playerId, BLOCK_DISTANCE);
         }
     }
 
@@ -42,7 +42,7 @@ public class SpawnProtectionListener implements Listener {
             Player player = event.getPlayer();
             UUID playerId = player.getUniqueId();
 
-            playerChunkCountMap.put(playerId, CHUNK_DISTANCE);
+            playerBlockCountMap.put(playerId, BLOCK_DISTANCE);
     }
 
     @EventHandler
@@ -51,38 +51,38 @@ public class SpawnProtectionListener implements Listener {
         Player residentAsPlayer = TownyAPI.getInstance().getPlayer(teleporter);
         UUID playerId = residentAsPlayer.getUniqueId();
 
-        playerChunkCountMap.remove(playerId);
+        playerBlockCountMap.remove(playerId);
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
-        Chunk fromChunk = event.getFrom().getChunk();
-        Chunk toChunk = event.getTo().getChunk();
+        Block fromBlock = event.getFrom().getBlock();
+        Block toBlock = event.getTo().getBlock();
 
         Resident playerAsResident = TownyAPI.getInstance().getResident(player);
         ResidentMetadataManager rmm = new ResidentMetadataManager();
         SpawnProtPref SpawnProtPrefOfResident = rmm.getResidentSpawnProtPref(playerAsResident);
 
-        if (playerChunkCountMap.containsKey(playerId)) {
-            if (!fromChunk.equals(toChunk)) {
-                int remainingChunks = getRemainingChunks(playerId);
-                if (remainingChunks > 0) {
-                    remainingChunks--;
-                    updateRemainingChunks(playerId, remainingChunks);
+        if (playerBlockCountMap.containsKey(playerId)) {
+            if (!fromBlock.equals(toBlock)) {
+                int remainingBlocks = getRemainingBlocks(playerId);
+                if (remainingBlocks > 0) {
+                    remainingBlocks--;
+                    updateRemainingBlocks(playerId, remainingBlocks);
 
                     if (!(SpawnProtPrefOfResident == SpawnProtPref.HIDE)) {
                         Component message;
-                        if (remainingChunks > 0) {
+                        if ((remainingBlocks > 0) && ((remainingBlocks%5) == 0)) {
                             message = Component.text()
                                     .append(Component.text("[Towny] ", NamedTextColor.GOLD))
-                                    .append(Component.text("You have " + remainingChunks + " chunks left before losing items on death!", NamedTextColor.RED))
+                                    .append(Component.text("You have " + remainingBlocks + " blocks left before losing items on death!", NamedTextColor.RED))
                                     .build();
                         } else {
                             message = Component.text()
                                     .append(Component.text("[Towny] ", NamedTextColor.GOLD))
-                                    .append(Component.text("You will now lose your items if you die! Run ", NamedTextColor.RED))
+                                    .append(Component.text("You will now lose your items if you die! Run! ", NamedTextColor.RED))
                                     .append(Component.text("/spawnprotpref HIDE", NamedTextColor.GREEN))
                                     .append(Component.text(" to disable chunk notification warnings", NamedTextColor.RED))
                                     .build();
@@ -94,12 +94,12 @@ public class SpawnProtectionListener implements Listener {
         }
     }
 
-    private int getRemainingChunks(UUID playerId) {
-        return playerChunkCountMap.getOrDefault(playerId, CHUNK_DISTANCE);
+    private int getRemainingBlocks(UUID playerId) {
+        return playerBlockCountMap.getOrDefault(playerId, BLOCK_DISTANCE);
     }
 
-    private void updateRemainingChunks(UUID playerId, int remainingChunks) {
-        playerChunkCountMap.put(playerId, remainingChunks);
+    private void updateRemainingBlocks(UUID playerId, int remainingBlocks) {
+        playerBlockCountMap.put(playerId, remainingBlocks);
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -111,15 +111,15 @@ public class SpawnProtectionListener implements Listener {
         if (TownyAPI.getInstance().isWilderness(coord))
             return;
 
-        if (playerChunkCountMap.containsKey(playerId)) {
-            int remainingChunks = getRemainingChunks(playerId);
+        if (playerBlockCountMap.containsKey(playerId)) {
+            int remainingChunks = getRemainingBlocks(playerId);
             if (remainingChunks > 0) {
                 event.setKeepInventory(true);
                 event.setKeepLevel(true);
                 event.getDrops().clear();
                 event.setDroppedExp(0);
 
-                playerChunkCountMap.remove(playerId);
+                playerBlockCountMap.remove(playerId);
             }
         }
     }

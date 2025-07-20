@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.earthmc</groupId>
-    <artifactId>EMCCOM</artifactId>
-    <version>1.1</version>
+    <artifactId>DMCCombat</artifactId>
+    <version>1.2</version>
     <packaging>jar</packaging>
 
     <name>EMCCOM</name>
@@ -89,5 +89,12 @@
             <version>0.100.2.2</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.georg</groupId>
+            <artifactId>newbieprotection</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 </project>

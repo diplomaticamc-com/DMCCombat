@@ -7,30 +7,48 @@ import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.TownyWorld;
 import com.palmergames.util.TimeTools;
+import net.earthmc.emccom.EMCCOM;
 import net.earthmc.emccom.combat.CombatHandler;
 import net.earthmc.emccom.combat.bossbar.BossBarTask;
 import net.earthmc.emccom.manager.ResidentMetadataManager;
 import net.earthmc.emccom.object.CombatPref;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import com.georg.newbieprotection.NewbieProtection;
 
 import java.util.*;
 
 import static net.earthmc.emccom.object.CombatPref.UNSAFE;
 
 public class CombatListener implements Listener {
+    private final NewbieProtection newbieProtection;
+
+    public CombatListener(NewbieProtection newbieProtection) {
+        this.newbieProtection = newbieProtection;
+    }
 
     List<String> messagesList = Arrays.asList(
             "used Combat Log! It's a One-Hit KO!",
@@ -87,8 +105,12 @@ public class CombatListener implements Listener {
 
         } else if (event.getDamager() instanceof Projectile) {
             ProjectileSource shooter = ((Projectile) event.getDamager()).getShooter();
-            if (shooter == null || !(shooter instanceof Player))
+            if (shooter == null || !(shooter instanceof Player) || (shooter == damaged)){
                 return;
+            }
+            if (event.getDamager() instanceof EnderPearl) {
+                return;
+            }
 
             damager = (Player) shooter;
             CombatHandler.applyTag(damager);
@@ -99,6 +121,12 @@ public class CombatListener implements Listener {
         }
 
         if (damager.equals(damaged))
+            return;
+        /*if (newbieProtection.isProtected(damaged)) {
+            damager.sendMessage(ChatColor.RED + "The player you are attempting to damage is under newbie protection.");
+            return;
+        }*/
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL && damaged.getLastDamageCause() != null && damaged.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.FALL)
             return;
 
 
@@ -153,7 +181,7 @@ public class CombatListener implements Listener {
         }
     }
     @EventHandler
-    public void onOpen(InventoryOpenEvent event) {
+    public void onOpenEnderChest(InventoryOpenEvent event) {
         if (event.getInventory().getType() != InventoryType.ENDER_CHEST)
             return;
 
@@ -169,19 +197,7 @@ public class CombatListener implements Listener {
         player.sendMessage(ChatColor.RED + "You can't use your ender chest while being in combat.");
     }
 
-    @EventHandler
-    public void onRiptide(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
 
-        if (!CombatHandler.isTagged(player))
-            return;
-
-        if (!player.isRiptiding())
-            return;
-
-        event.setCancelled(true);
-        player.sendMessage(ChatColor.RED + "The riptide enchantment is disabled in combat.");
-    }
     @EventHandler
     public void onElytraFly(PlayerMoveEvent event){
         Player player = event.getPlayer();
@@ -192,5 +208,47 @@ public class CombatListener implements Listener {
             return;
         event.setCancelled(true);
         player.sendMessage((ChatColor.RED + "Elytras aren't enabled in combat."));
+    }
+
+    /* vvv Anti-Debuff stuff below vvv */
+
+
+    @EventHandler
+    public void onItemHeld(PlayerItemHeldEvent event){
+        Player player = event.getPlayer();
+        checkAndApplyEffect(player);
+
+    }
+
+    @EventHandler
+    public void onSwapHands(PlayerSwapHandItemsEvent event){
+        Player player = event.getPlayer();
+        checkAndApplyEffect(player);
+    }
+    private boolean isAntiDebuff(ItemStack item) {
+        return item !=null && item.getType() == Material.TOTEM_OF_UNDYING;
+    }
+    private void checkAndApplyEffect(Player player) {
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        ItemStack offHand = player.getInventory().getItemInOffHand();
+        if (isAntiDebuff(mainHand) || isAntiDebuff(offHand)) {
+
+            PotionEffectType[] effectsToRemove = {
+                    PotionEffectType.SLOW_FALLING,
+                    PotionEffectType.WEAKNESS,
+                    PotionEffectType.WITHER,
+                    PotionEffectType.SLOW,
+                    PotionEffectType.BLINDNESS,
+                    PotionEffectType.DAMAGE_RESISTANCE,
+                    PotionEffectType.JUMP,
+                    PotionEffectType.POISON,
+                    PotionEffectType.CONFUSION
+            };
+            for (PotionEffectType effect : effectsToRemove) {
+                player.removePotionEffect(effect);
+            }
+
+
+        }
     }
 }
