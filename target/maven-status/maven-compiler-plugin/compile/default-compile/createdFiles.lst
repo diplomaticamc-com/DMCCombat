@@ -1,0 +1,17 @@
+net\earthmc\emccom\config\Config.class
+net\earthmc\emccom\commands\SpawnProtPrefCommand.class
+net\earthmc\emccom\EMCCOM.class
+net\earthmc\emccom\object\SpawnProtPref.class
+net\earthmc\emccom\combat\listener\CommandListener.class
+net\earthmc\emccom\util\Translation.class
+net\earthmc\emccom\combat\listener\PlayerItemCooldownListener.class
+net\earthmc\emccom\manager\ResidentMetadataManager.class
+net\earthmc\emccom\combat\CombatHandler$1.class
+net\earthmc\emccom\object\CombatPref.class
+net\earthmc\emccom\combat\listener\CombatListener.class
+net\earthmc\emccom\combat\listener\SpawnProtectionListener.class
+net\earthmc\emccom\combat\CombatHandler.class
+net\earthmc\emccom\combat\listener\CombatLogMessages.class
+net\earthmc\emccom\commands\CombatTagCommand.class
+net\earthmc\emccom\commands\CombatPrefCommand.class
+net\earthmc\emccom\combat\bossbar\BossBarTask.class

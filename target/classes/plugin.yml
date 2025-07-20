@@ -1,0 +1,18 @@
+name: EMCCOM
+version: 1.2
+main: net.earthmc.emccom.EMCCOM
+api-version: 1.19
+authors: [ Foksha, Error110, Windows10Laptop, CorruptedGreed ]
+description: A combat plugin!
+depend:
+  - Towny
+softdepend:
+  - NewbieProtection
+commands:
+  combattag:
+    description: Assists admins in tagging and untagging users.
+    permission: emccom.command.combattag
+    permission-message: You do not have permission to run this command!
+    usage: /combattag help
+  combatpref:
+  spawnprotpref:
