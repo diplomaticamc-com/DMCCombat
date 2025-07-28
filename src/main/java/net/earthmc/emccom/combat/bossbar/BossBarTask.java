@@ -17,6 +17,13 @@ public class BossBarTask extends BukkitRunnable {
 
     private static Map<UUID, BossBar> bossBarMap = new ConcurrentHashMap<>();
 
+    public static void clearAll() {
+        for (BossBar bar : bossBarMap.values()) {
+            bar.removeAll();
+        }
+        bossBarMap.clear();
+    }
+
     @Override
     public void run() {
         for (Player online : Bukkit.getOnlinePlayers()) {
