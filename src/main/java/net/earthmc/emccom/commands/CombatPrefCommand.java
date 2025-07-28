@@ -4,6 +4,9 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 import net.earthmc.emccom.manager.ResidentMetadataManager;
 import net.earthmc.emccom.object.CombatPref;
+import net.earthmc.emccom.EMCCOM;
+import net.earthmc.emccom.config.Config;
+import org.bukkit.ChatColor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
@@ -13,14 +16,32 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CombatPrefCommand implements TabExecutor {
 
+    private final EMCCOM plugin;
+
+    public CombatPrefCommand(EMCCOM plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            if (!sender.isOp()) {
+                sender.sendMessage(ChatColor.RED + "You must be an operator to use this command.");
+                return true;
+            }
+            plugin.reloadAll();
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                    plugin.getConfig().getString("reload-message", "Configuration reloaded.")));
+            return true;
+        }
+
         if (!(sender instanceof Player player)) {
             sender.sendMessage(Component.text("Only players can use this command", NamedTextColor.RED));
             return true;
@@ -69,10 +90,18 @@ public class CombatPrefCommand implements TabExecutor {
         } else if (args.length == 1) {
             // Provide completions for the first argument
             if (args[0].isEmpty()) {
-                return availableArguments;
+                List<String> list = new ArrayList<>(availableArguments);
+                if (sender.isOp()) {
+                    list.add("reload");
+                }
+                return list;
             } else {
-                return availableArguments.stream()
-                        .filter(string -> string.startsWith(args[0].toLowerCase()))
+                List<String> list = new ArrayList<>(availableArguments);
+                if (sender.isOp()) {
+                    list.add("reload");
+                }
+                return list.stream()
+                        .filter(string -> string.toLowerCase().startsWith(args[0].toLowerCase()))
                         .collect(Collectors.toList());
             }
         }
