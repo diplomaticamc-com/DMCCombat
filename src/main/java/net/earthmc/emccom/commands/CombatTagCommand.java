@@ -6,15 +6,35 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import net.earthmc.emccom.EMCCOM;
+import net.earthmc.emccom.config.Config;
+import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 public class CombatTagCommand implements CommandExecutor {
+
+    private final EMCCOM plugin;
+
+    public CombatTagCommand(EMCCOM plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         if (args.length < 1) {
             showHelp(sender);
+            return true;
+        }
+
+        if (args.length == 1 && args[0].equalsIgnoreCase("reload")) {
+            if (!sender.isOp()) {
+                sender.sendMessage(ChatColor.RED + "You must be an operator to use this command.");
+                return true;
+            }
+            plugin.reloadAll();
+            sender.sendMessage(ChatColor.translateAlternateColorCodes('&',
+                    plugin.getConfig().getString("reload-message", "Configuration reloaded.")));
             return true;
         }
 
