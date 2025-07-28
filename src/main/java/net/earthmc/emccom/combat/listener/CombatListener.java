@@ -37,17 +37,13 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
-import com.georg.newbieprotection.NewbieProtection;
 
 import java.util.*;
 
 import static net.earthmc.emccom.object.CombatPref.UNSAFE;
 
 public class CombatListener implements Listener {
-    private final NewbieProtection newbieProtection;
-
-    public CombatListener(NewbieProtection newbieProtection) {
-        this.newbieProtection = newbieProtection;
+    public CombatListener() {
     }
 
     List<String> messagesList = Arrays.asList(
@@ -122,10 +118,6 @@ public class CombatListener implements Listener {
 
         if (damager.equals(damaged))
             return;
-        /*if (newbieProtection.isProtected(damaged)) {
-            damager.sendMessage(ChatColor.RED + "The player you are attempting to damage is under newbie protection.");
-            return;
-        }*/
         if (event.getCause() == EntityDamageEvent.DamageCause.FALL && damaged.getLastDamageCause() != null && damaged.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.FALL)
             return;
 
