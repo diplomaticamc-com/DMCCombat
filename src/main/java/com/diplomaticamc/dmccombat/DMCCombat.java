@@ -1,32 +1,32 @@
-package net.earthmc.emccom;
+package com.diplomaticamc.dmccombat;
 
-import net.earthmc.emccom.manager.NewbieManager;
-import net.earthmc.emccom.commands.NewbieCommand;
-import net.earthmc.emccom.combat.listener.NewbieProtectionListener;
-import net.earthmc.emccom.combat.CombatHandler;
-import net.earthmc.emccom.combat.bossbar.BossBarTask;
-import net.earthmc.emccom.combat.listener.CombatListener;
-import net.earthmc.emccom.combat.listener.CommandListener;
-import net.earthmc.emccom.combat.listener.PlayerItemCooldownListener;
-import net.earthmc.emccom.combat.listener.SpawnProtectionListener;
-import net.earthmc.emccom.commands.CombatPrefCommand;
-import net.earthmc.emccom.commands.CombatTagCommand;
-import net.earthmc.emccom.commands.SpawnProtPrefCommand;
-import net.earthmc.emccom.config.Config;
-import net.earthmc.emccom.util.Translation;
+import com.diplomaticamc.dmccombat.manager.NewbieManager;
+import com.diplomaticamc.dmccombat.commands.NewbieCommand;
+import com.diplomaticamc.dmccombat.combat.listener.NewbieProtectionListener;
+import com.diplomaticamc.dmccombat.combat.CombatHandler;
+import com.diplomaticamc.dmccombat.combat.bossbar.BossBarTask;
+import com.diplomaticamc.dmccombat.combat.listener.CombatListener;
+import com.diplomaticamc.dmccombat.combat.listener.CommandListener;
+import com.diplomaticamc.dmccombat.combat.listener.PlayerItemCooldownListener;
+import com.diplomaticamc.dmccombat.combat.listener.SpawnProtectionListener;
+import com.diplomaticamc.dmccombat.commands.CombatPrefCommand;
+import com.diplomaticamc.dmccombat.commands.CombatTagCommand;
+import com.diplomaticamc.dmccombat.commands.SpawnProtPrefCommand;
+import com.diplomaticamc.dmccombat.config.Config;
+import com.diplomaticamc.dmccombat.util.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 import java.util.logging.Logger;
 
-public final class EMCCOM extends JavaPlugin {
+public final class DMCCombat extends JavaPlugin {
 
     private NewbieManager newbieManager;
 
-    private static EMCCOM instance;
+    private static DMCCombat instance;
 
-    public static EMCCOM getInstance() {
+    public static DMCCombat getInstance() {
         return instance;
     }
 

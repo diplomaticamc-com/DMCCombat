@@ -1,13 +1,12 @@
-package net.earthmc.emccom.combat.listener;
+package com.diplomaticamc.dmccombat.combat.listener;
 import com.google.common.collect.ImmutableSet;
-import net.earthmc.emccom.combat.CombatHandler;
+import com.diplomaticamc.dmccombat.combat.CombatHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class CommandListener implements Listener {

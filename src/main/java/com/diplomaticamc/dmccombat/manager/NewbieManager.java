@@ -1,6 +1,6 @@
-package net.earthmc.emccom.manager;
+package com.diplomaticamc.dmccombat.manager;
 
-import net.earthmc.emccom.EMCCOM;
+import com.diplomaticamc.dmccombat.DMCCombat;
 import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,7 +18,7 @@ import java.util.UUID;
  // handles loading, saving and querying of newbie protection data
 
 public class NewbieManager {
-    private final EMCCOM plugin;
+    private final DMCCombat plugin;
     private File dataFile;
     private FileConfiguration dataConfig;
     private long protectionTimeMinutes;
@@ -34,7 +34,7 @@ public class NewbieManager {
     // Task that checks for expired protections
     private BukkitTask expiryTask;
 
-    public NewbieManager(EMCCOM plugin) {
+    public NewbieManager(DMCCombat plugin) {
         this.plugin = plugin;
     }
 

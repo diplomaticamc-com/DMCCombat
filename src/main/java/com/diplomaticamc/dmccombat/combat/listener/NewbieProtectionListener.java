@@ -1,7 +1,7 @@
-package net.earthmc.emccom.combat.listener;
+package com.diplomaticamc.dmccombat.combat.listener;
 
-import net.earthmc.emccom.EMCCOM;
-import net.earthmc.emccom.manager.NewbieManager;
+import com.diplomaticamc.dmccombat.DMCCombat;
+import com.diplomaticamc.dmccombat.manager.NewbieManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,7 +24,7 @@ public class NewbieProtectionListener implements Listener {
         if (!player.hasPlayedBefore()) {
             manager.addProtection(player);
             manager.saveData();
-            EMCCOM.getInstance().getServer().getScheduler().runTaskLater(EMCCOM.getInstance(), () -> {
+            DMCCombat.getInstance().getServer().getScheduler().runTaskLater(DMCCombat.getInstance(), () -> {
                 long total = manager.getProtectionTimeMinutes();
                 String timeMsg = total >= 60 ? (total / 60 + " hours") : (total + " minutes");
                 player.sendMessage(ChatColor.GREEN + "You are under newbie protection for " + timeMsg + "!");
@@ -34,7 +34,7 @@ public class NewbieProtectionListener implements Listener {
             manager.playerJoined(player.getUniqueId());
             if (manager.isProtected(player)) {
                 long remaining = manager.getRemainingMinutes(player);
-                EMCCOM.getInstance().getServer().getScheduler().runTaskLater(EMCCOM.getInstance(), () -> {
+                DMCCombat.getInstance().getServer().getScheduler().runTaskLater(DMCCombat.getInstance(), () -> {
                     if (remaining >= 60) {
                         long hours = remaining / 60;
                         player.sendMessage(ChatColor.GREEN + "You have " + hours + (hours == 1 ? " hour" : " hours") + " of newbie protection remaining");

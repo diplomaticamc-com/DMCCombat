@@ -1,6 +1,6 @@
-package net.earthmc.emccom.combat.bossbar;
+package com.diplomaticamc.dmccombat.combat.bossbar;
 
-import net.earthmc.emccom.combat.CombatHandler;
+import com.diplomaticamc.dmccombat.combat.CombatHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;

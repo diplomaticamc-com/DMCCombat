@@ -1,21 +1,20 @@
-package net.earthmc.emccom.commands;
+package com.diplomaticamc.dmccombat.commands;
 
-import net.earthmc.emccom.combat.CombatHandler;
+import com.diplomaticamc.dmccombat.combat.CombatHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import net.earthmc.emccom.EMCCOM;
-import net.earthmc.emccom.config.Config;
+import com.diplomaticamc.dmccombat.DMCCombat;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 public class CombatTagCommand implements CommandExecutor {
 
-    private final EMCCOM plugin;
+    private final DMCCombat plugin;
 
-    public CombatTagCommand(EMCCOM plugin) {
+    public CombatTagCommand(DMCCombat plugin) {
         this.plugin = plugin;
     }
 

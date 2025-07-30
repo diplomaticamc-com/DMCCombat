@@ -1,4 +1,4 @@
-package net.earthmc.emccom.config;
+package com.diplomaticamc.dmccombat.config;
 
 import org.bukkit.configuration.file.FileConfiguration;
 

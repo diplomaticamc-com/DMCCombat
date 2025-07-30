@@ -1,4 +1,4 @@
-package net.earthmc.emccom.combat.bossbar;
+package com.diplomaticamc.dmccombat.combat.bossbar;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

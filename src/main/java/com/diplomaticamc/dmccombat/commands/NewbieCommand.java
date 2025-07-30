@@ -1,8 +1,7 @@
-package net.earthmc.emccom.commands;
+package com.diplomaticamc.dmccombat.commands;
 
-import net.earthmc.emccom.EMCCOM;
-import net.earthmc.emccom.manager.NewbieManager;
-import net.earthmc.emccom.config.Config;
+import com.diplomaticamc.dmccombat.DMCCombat;
+import com.diplomaticamc.dmccombat.manager.NewbieManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -21,9 +20,9 @@ import java.util.stream.Collectors;
 
 public class NewbieCommand implements TabExecutor {
     private final NewbieManager manager;
-    private final EMCCOM plugin;
+    private final DMCCombat plugin;
 
-    public NewbieCommand(NewbieManager manager, EMCCOM plugin) {
+    public NewbieCommand(NewbieManager manager, DMCCombat plugin) {
         this.manager = manager;
         this.plugin = plugin;
     }

@@ -1,15 +1,11 @@
-package net.earthmc.emccom.combat;
+package com.diplomaticamc.dmccombat.combat;
 
-import com.palmergames.util.TimeTools;
-import net.earthmc.emccom.EMCCOM;
+import com.diplomaticamc.dmccombat.DMCCombat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryCloseEvent.Reason;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.*;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -48,7 +44,7 @@ public class CombatHandler {
                     // removePlayerFromCombatTeam(player);
                 }
             }
-        }.runTaskTimerAsynchronously(EMCCOM.getInstance(), 10L, 10L);
+        }.runTaskTimerAsynchronously(DMCCombat.getInstance(), 10L, 10L);
     }
 
     public static void applyTag(Player player) {

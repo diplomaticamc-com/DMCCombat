@@ -1,4 +1,4 @@
-package net.earthmc.emccom.object;
+package com.diplomaticamc.dmccombat.object;
 
 public enum CombatPref {
     SAFE,

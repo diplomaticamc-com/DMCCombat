@@ -1,19 +1,17 @@
-package net.earthmc.emccom.combat.listener;
+package com.diplomaticamc.dmccombat.combat.listener;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.SpawnEvent;
 import com.palmergames.bukkit.towny.event.teleport.CancelledTownyTeleportEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.WorldCoord;
-import net.earthmc.emccom.EMCCOM;
-import net.earthmc.emccom.combat.bossbar.SpawnProtectionBar;
-import net.earthmc.emccom.manager.ResidentMetadataManager;
-import net.earthmc.emccom.object.SpawnProtPref;
+import com.diplomaticamc.dmccombat.DMCCombat;
+import com.diplomaticamc.dmccombat.combat.bossbar.SpawnProtectionBar;
+import com.diplomaticamc.dmccombat.manager.ResidentMetadataManager;
+import com.diplomaticamc.dmccombat.object.SpawnProtPref;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,13 +28,13 @@ import java.util.UUID;
 
 public class SpawnProtectionListener implements Listener {
 
-    private final EMCCOM plugin;
+    private final DMCCombat plugin;
     private final Map<UUID, Integer> distanceMap = new HashMap<>();
     private final boolean useChunks;
     private final int chunkDistance;
     private final int blockDistance;
 
-    public SpawnProtectionListener(EMCCOM plugin) {
+    public SpawnProtectionListener(DMCCombat plugin) {
         this.plugin = plugin;
         this.useChunks = plugin.getConfig().getBoolean("spawn_protection.use_chunks", false);
         this.chunkDistance = plugin.getConfig().getInt("spawn_protection.chunks_amount", 8);

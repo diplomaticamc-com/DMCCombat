@@ -1,21 +1,20 @@
-package net.earthmc.emccom.combat.listener;
+package com.diplomaticamc.dmccombat.combat.listener;
 
 import io.papermc.paper.event.player.PlayerItemCooldownEvent;
-import net.earthmc.emccom.EMCCOM;
+import com.diplomaticamc.dmccombat.DMCCombat;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerRiptideEvent;
 
-import static net.earthmc.emccom.combat.CombatHandler.isTagged;
+import static com.diplomaticamc.dmccombat.combat.CombatHandler.isTagged;
 
 public class PlayerItemCooldownListener implements Listener {
-    private final EMCCOM plugin;
+    private final DMCCombat plugin;
 
-    public PlayerItemCooldownListener(EMCCOM plugin) {
+    public PlayerItemCooldownListener(DMCCombat plugin) {
         this.plugin = plugin;
     }
 

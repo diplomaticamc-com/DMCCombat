@@ -1,4 +1,4 @@
-package net.earthmc.emccom.combat.listener;
+package com.diplomaticamc.dmccombat.combat.listener;
 
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.damage.TownyPlayerDamagePlayerEvent;
@@ -7,13 +7,11 @@ import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownBlockType;
 import com.palmergames.bukkit.towny.object.TownyWorld;
 import com.palmergames.util.TimeTools;
-import net.earthmc.emccom.EMCCOM;
-import net.earthmc.emccom.combat.CombatHandler;
-import net.earthmc.emccom.combat.bossbar.BossBarTask;
-import net.earthmc.emccom.manager.ResidentMetadataManager;
-import net.earthmc.emccom.object.CombatPref;
+import com.diplomaticamc.dmccombat.combat.CombatHandler;
+import com.diplomaticamc.dmccombat.combat.bossbar.BossBarTask;
+import com.diplomaticamc.dmccombat.manager.ResidentMetadataManager;
+import com.diplomaticamc.dmccombat.object.CombatPref;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EnderPearl;
@@ -25,7 +23,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -33,14 +30,12 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.*;
 
-import static net.earthmc.emccom.object.CombatPref.UNSAFE;
+import static com.diplomaticamc.dmccombat.object.CombatPref.UNSAFE;
 
 public class CombatListener implements Listener {
     public CombatListener() {

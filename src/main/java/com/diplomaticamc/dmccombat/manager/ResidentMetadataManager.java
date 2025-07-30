@@ -1,9 +1,9 @@
-package net.earthmc.emccom.manager;
+package com.diplomaticamc.dmccombat.manager;
 
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.metadata.StringDataField;
-import net.earthmc.emccom.object.CombatPref;
-import net.earthmc.emccom.object.SpawnProtPref;
+import com.diplomaticamc.dmccombat.object.CombatPref;
+import com.diplomaticamc.dmccombat.object.SpawnProtPref;
 
 public class ResidentMetadataManager {
     private final String combatPrefKey = "emccom_combat_pref";
