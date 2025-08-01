@@ -1,9 +1,9 @@
 name: DMCCombat
 version: ${project.version}
 main: com.diplomaticamc.dmccombat.DMCCombat
-api-version: 1.19
+api-version: 1.20
 authors: [ Foksha, Error110, Windows10Laptop, CorruptedGreed, StoffeH, Starwars_16 ]
-description: A combat plugin!
+description: Combat plugin for DiplomaticaMC. DMCCombat is the combination of development work by DiplomaticaMC and EarthMC's deprecated public combat plugin repository (EMCCOM).
 depend:
   - Towny
 commands:
@@ -15,4 +15,8 @@ commands:
   combatpref:
   spawnprotpref:
   newbie:
+    description: Newbie protection interface.
+    usage: /newbie
   protectiontime:
+    description: View remaining protection time!
+    usage: /protectiontime

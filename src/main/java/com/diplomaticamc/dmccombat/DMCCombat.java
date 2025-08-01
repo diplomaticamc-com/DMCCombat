@@ -41,7 +41,7 @@ public final class DMCCombat extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        log.info("§e======= §a EMCCOM (DMC Fork) §e=======");
+        log.info("§e======= §a DMCCombat §e=======");
 
         Translation.loadStrings();
 
