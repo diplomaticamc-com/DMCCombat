@@ -224,12 +224,12 @@ public class CombatListener implements Listener {
                     PotionEffectType.SLOW_FALLING,
                     PotionEffectType.WEAKNESS,
                     PotionEffectType.WITHER,
-                    PotionEffectType.SLOW,
+                    PotionEffectType.SLOWNESS,
                     PotionEffectType.BLINDNESS,
-                    PotionEffectType.DAMAGE_RESISTANCE,
-                    PotionEffectType.JUMP,
+                    PotionEffectType.RESISTANCE,
+                    PotionEffectType.JUMP_BOOST,
                     PotionEffectType.POISON,
-                    PotionEffectType.CONFUSION
+//                    PotionEffectType.CONFUSION
             };
             for (PotionEffectType effect : effectsToRemove) {
                 player.removePotionEffect(effect);
