@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/EMCCOM.iml" filepath="$PROJECT_DIR$/EMCCOM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DMCCombat.iml" filepath="$PROJECT_DIR$/DMCCombat.iml" />
     </modules>
   </component>
 </project>

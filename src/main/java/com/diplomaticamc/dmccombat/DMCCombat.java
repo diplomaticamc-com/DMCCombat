@@ -57,7 +57,7 @@ public final class DMCCombat extends JavaPlugin {
 
 
 
-        log.info("EMCCOM (DMC Fork) has been loaded.");
+        log.info("DMCCombat has been loaded.");
     }
 
     private void setupListeners() {
@@ -106,7 +106,7 @@ public final class DMCCombat extends JavaPlugin {
         }
         BossBarTask.clearAll();
         // Plugin shutdown logic
-        log.warning("EMCCOM has been disabled.");
+        log.warning("DMCCombat has been disabled.");
     }
 
 }

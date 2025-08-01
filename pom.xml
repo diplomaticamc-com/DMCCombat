@@ -6,15 +6,16 @@
 
     <groupId>com.diplomaticamc</groupId>
     <artifactId>DMCCombat</artifactId>
-    <version>1.2.1</version>
+    <version>${build.version}</version>
     <packaging>jar</packaging>
 
     <name>DMCCombat</name>
 
     <description>A combat plugin designed for DiplomaticaMC. Originally forked from EarthMC's deprecated EMCCOM repository.</description>
     <properties>
-        <java.version>21</java.version>
+        <java.version>23</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <build.version>1.2-UNSAFE</build.version> <!-- fallback -->
     </properties>
 
     <build>
