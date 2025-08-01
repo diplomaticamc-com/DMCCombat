@@ -1,0 +1,40 @@
+# Version control for pushes to repository
+# -stoffeh
+
+name: Build on Tag
+
+on:
+  push:
+    tags:
+      - '*'  # triggers on tags like 1.2.1, 1.2.1-b1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '23'
+          distribution: 'temurin'
+
+      - name: Build the thing!!! with Maven
+        run: mvn clean package
+
+      - name: Rename .jar using repo name and git tag
+        run: |
+          TAG_NAME=${GITHUB_REF##*/}
+          REPO_NAME=${GITHUB_REPOSITORY##*/}
+          mkdir -p artifact
+          JAR_PATH=$(find target -name "*.jar" | grep -v 'original' | head -n 1)
+          cp "$JAR_PATH" "artifact/${REPO_NAME}-${TAG_NAME}.jar"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ github.ref_name }}
+          path: artifact/*.jar
