@@ -52,94 +52,85 @@ public class NewbieCommand implements TabExecutor {
 //            return reloadCommand(sender);
 //        }
 
-//        if (args.length == 2) {
-//            String sub = args[0];
-//            String targetName = args[1];
-//
-//            Player targetPlayer = Bukkit.getPlayerExact(targetName);
-//            if (targetPlayer == null) {
-//                // Fall back to a case-insensitive search for an online player
-//                targetPlayer = Bukkit.getPlayer(targetName);
-//            }
-//
-//            OfflinePlayer target;
-//            if (targetPlayer != null) {
-//                target = targetPlayer;
-//            } else {
-//                target = Bukkit.getOfflinePlayer(targetName);
-//                if (!target.hasPlayedBefore()) {
-//                    // Try case-insensitive lookup among known offline players
-//                    for (OfflinePlayer op : Bukkit.getOfflinePlayers()) {
-//                        String name = op.getName();
-//                        if (name != null && name.equalsIgnoreCase(targetName)) {
-//                            target = op;
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//            UUID uuid = target.getUniqueId();
-//            if (uuid == null) {
-//                uuid = manager.findUUIDByName(targetName);
-//            }
-//
-//            // if the player has never joined before and isnt online, UUID may be invalid
-//            if (uuid == null || (!target.hasPlayedBefore() && targetPlayer == null)) {
-//                sender.sendMessage(ChatColor.RED + "Player not found.");
-//                return true;
-//            }
-//
-//            if (!sender.hasPermission("newbie.admin")) {
-//                sender.sendMessage(ChatColor.RED + "You must be an operator to use this command.");
-//                return true;
-//            }
-//
-//            switch (sub.toLowerCase()) {
-////                case "reset":
-//
-//                case "enable":
-//                    manager.addProtection(uuid);
-//                    manager.saveData();
-//                    sender.sendMessage(ChatColor.GREEN + "Newbie protection enabled for " + target.getName());
-//                    if (target.isOnline()) {
-//                        target.getPlayer().sendMessage(ChatColor.GREEN + "Your newbie protection has been reset by an admin.");
-//                    }
-//                    break;
-//
-//                case "disable":
-//                    manager.removeProtection(targetPlayer);
-//                    manager.removeProtectedList(player);
-//
-//                    sender.sendMessage(ChatColor.YELLOW + "Newbie protection disabled for " + target.getName());
-//                    if (target.isOnline()) {
-//                        target.getPlayer().sendMessage(ChatColor.RED + "Your newbie protection has been disabled by an admin.");
-//                    } else {
-//
-//                    }
-//                    break;
-//
-//                case "protectiontime":
-//                    long remain = manager.getRemainingMinutes(uuid);
-//                    if (!manager.isProtected(uuid)) {
-//                        sender.sendMessage(ChatColor.RED + target.getName() + " is not under newbie protection.");
-//                    } else if (remain >= 60) {
-//                        long h = remain / 60;
-//                        sender.sendMessage(ChatColor.GREEN + target.getName() + " has " + h + (h == 1 ? " hour" : " hours") + " of protection remaining.");
-//                    } else {
-//                        sender.sendMessage(ChatColor.GREEN + target.getName() + " has " + remain + (remain == 1 ? " minute" : " minutes") + " of protection remaining.");
-//                    }
-//                    break;
-//
-//                    if (!manager.isProtected(player)) {
-//                        player.sendMessage(ChatColor.RED + "You are not under newbie protection.");
-//                    } else {
-//                        player.sendMessage(ChatColor.GREEN + "You are protected from players for " + manager.calculatedTimeRemaining(player) + "!");
-//                    }
-//                default:
-//                    sender.sendMessage(ChatColor.RED + "Unknown subcommand.");
-//            }
-//            return true;
-//        }
+        if (args.length == 2) {
+            String sub = args[0];
+            String targetName = args[1];
+
+            Player targetPlayer = Bukkit.getPlayerExact(targetName);
+            if (targetPlayer == null) {
+                // Fall back to a case-insensitive search for an online player
+                targetPlayer = Bukkit.getPlayer(targetName);
+            }
+
+            OfflinePlayer target;
+
+            if (targetPlayer != null) {
+                target = targetPlayer;
+            } else {
+                target = Bukkit.getOfflinePlayer(targetName);
+
+                if (!target.hasPlayedBefore()) {
+                    // Try case-insensitive lookup among known offline players
+                    for (OfflinePlayer op : Bukkit.getOfflinePlayers()) {
+                        String name = op.getName();
+
+                        if (name != null && name.equalsIgnoreCase(targetName)) {
+                            target = op;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // if the player has never joined before and isnt online, UUID may be invalid
+            if (target == null || (!target.hasPlayedBefore() && targetPlayer == null)) {
+                sender.sendMessage(ChatColor.RED + "Player not found.");
+                return true;
+            }
+
+            if (!sender.hasPermission("newbie.admin")) {
+                sender.sendMessage(ChatColor.RED + "You must be an operator to use this command.");
+                return true;
+            }
+
+            switch (sub.toLowerCase()) {
+//                case "reset":
+
+                //Subcommands
+
+                case "enable":
+                    manager.addProtection((Player) target);
+                    sender.sendMessage(ChatColor.GREEN + "Newbie protection enabled for " + target.getName());
+                    if (target.isOnline()) {
+                        target.getPlayer().sendMessage(ChatColor.GREEN + "Your newbie protection has been reset by an admin.");
+                        manager.addProtectedList((Player) target);
+                    }
+                    break;
+
+                case "disable":
+                    manager.removeProtection((Player) target);
+
+                    sender.sendMessage(ChatColor.YELLOW + "Newbie protection disabled for " + target.getName());
+                    if (target.isOnline()) {
+                        manager.removeProtectedList((Player) target);
+                        target.getPlayer().sendMessage(ChatColor.RED + "Your newbie protection has been disabled by an admin.");
+                    } else {
+
+                    }
+                    break;
+
+                case "protectiontime":
+                    if (!manager.isProtected((Player) target)) {
+                        sender.sendMessage(ChatColor.RED + target.getName() + " is not under newbie protection.");
+                    } else {
+                        sender.sendMessage(ChatColor.GREEN + target.getName() + " has " + manager.calculatedTimeRemaining((Player) target) + " of protection remaining.");
+                    }
+                    break;
+                default:
+                    sender.sendMessage(ChatColor.RED + "Unknown subcommand.");
+            }
+            return true;
+        }
 
         return true;
     }
@@ -181,6 +172,7 @@ public class NewbieCommand implements TabExecutor {
         sender.sendMessage(ChatColor.YELLOW + "/newbie protectiontime" + ChatColor.GRAY + " - Check your remaining protection time");
 
         if (sender.hasPermission("newbie.admin")) {
+            sender.sendMessage(ChatColor.AQUA + "Admin Commands:");
             sender.sendMessage(ChatColor.YELLOW + "/newbie disable <player>" + ChatColor.GRAY + " - Disable protection for player (admin)");
 //                sender.sendMessage(ChatColor.YELLOW + "/newbie reset <player>" + ChatColor.GRAY + " - Reset protection for player (admin)");
             sender.sendMessage(ChatColor.YELLOW + "/newbie enable <player>" + ChatColor.GRAY + " - Enable protection for player (admin)");

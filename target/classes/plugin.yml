@@ -1,5 +1,5 @@
 name: DMCCombat
-version: 2.0.0-UNSAFE
+version: 2.0.0
 main: com.diplomaticamc.dmccombat.DMCCombat
 api-version: 1.20
 authors: [ Foksha, Error110, Windows10Laptop, CorruptedGreed, StoffeH, Starwars_16 ]

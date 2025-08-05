@@ -66,7 +66,7 @@ public final class DMCCombat extends JavaPlugin {
     }
 
     private void setupCommands() {
-        log.info("§5= §bRegistering Commands");
+        log.info("Registering Commands...");
         Objects.requireNonNull(getCommand("combattag")).setExecutor(new CombatTagCommand(this));
         Objects.requireNonNull(getCommand("combatpref")).setExecutor(new CombatPrefCommand(this));
         Objects.requireNonNull(getCommand("spawnprotpref")).setExecutor(new SpawnProtPrefCommand(this));
