@@ -56,34 +56,33 @@ public class NewbieCommand implements TabExecutor {
             String sub = args[0];
             String targetName = args[1];
 
-            Player targetPlayer = Bukkit.getPlayerExact(targetName);
-            if (targetPlayer == null) {
+            Player target = Bukkit.getPlayerExact(targetName);
+            if (target == null) {
                 // Fall back to a case-insensitive search for an online player
-                targetPlayer = Bukkit.getPlayer(targetName);
+                target = Bukkit.getPlayer(targetName);
             }
-
-            OfflinePlayer target;
-
-            if (targetPlayer != null) {
-                target = targetPlayer;
-            } else {
-                target = Bukkit.getOfflinePlayer(targetName);
-
-                if (!target.hasPlayedBefore()) {
-                    // Try case-insensitive lookup among known offline players
-                    for (OfflinePlayer op : Bukkit.getOfflinePlayers()) {
-                        String name = op.getName();
-
-                        if (name != null && name.equalsIgnoreCase(targetName)) {
-                            target = op;
-                            break;
-                        }
-                    }
-                }
-            }
+//            OfflinePlayer target;
+//
+//            if (targetPlayer != null) {
+//                target = targetPlayer;
+//            } else {
+//                target = Bukkit.getOfflinePlayer(targetName);
+//
+//                if (!target.hasPlayedBefore()) {
+//                    // Try case-insensitive lookup among known offline players
+//                    for (OfflinePlayer op : Bukkit.getOfflinePlayers()) {
+//                        String name = op.getName();
+//
+//                        if (name != null && name.equalsIgnoreCase(targetName)) {
+//                            target = op;
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
 
             // if the player has never joined before and isnt online, UUID may be invalid
-            if (target == null || (!target.hasPlayedBefore() && targetPlayer == null)) {
+            if (target == null || (!target.hasPlayedBefore())) {
                 sender.sendMessage(ChatColor.RED + "Player not found.");
                 return true;
             }
@@ -99,20 +98,20 @@ public class NewbieCommand implements TabExecutor {
                 //Subcommands
 
                 case "enable":
-                    manager.addProtection((Player) target);
+                    manager.addProtection(target);
                     sender.sendMessage(ChatColor.GREEN + "Newbie protection enabled for " + target.getName());
                     if (target.isOnline()) {
                         target.getPlayer().sendMessage(ChatColor.GREEN + "Your newbie protection has been reset by an admin.");
-                        manager.addProtectedList((Player) target);
+                        manager.addProtectedList(target);
                     }
                     break;
 
                 case "disable":
-                    manager.removeProtection((Player) target);
+                    manager.removeProtection(target);
 
                     sender.sendMessage(ChatColor.YELLOW + "Newbie protection disabled for " + target.getName());
                     if (target.isOnline()) {
-                        manager.removeProtectedList((Player) target);
+                        manager.removeProtectedList(target);
                         target.getPlayer().sendMessage(ChatColor.RED + "Your newbie protection has been disabled by an admin.");
                     } else {
 
@@ -120,7 +119,7 @@ public class NewbieCommand implements TabExecutor {
                     break;
 
                 case "protectiontime":
-                    if (!manager.isProtected((Player) target)) {
+                    if (!manager.isProtected(target)) {
                         sender.sendMessage(ChatColor.RED + target.getName() + " is not under newbie protection.");
                     } else {
                         sender.sendMessage(ChatColor.GREEN + target.getName() + " has " + manager.calculatedTimeRemaining((Player) target) + " of protection remaining.");

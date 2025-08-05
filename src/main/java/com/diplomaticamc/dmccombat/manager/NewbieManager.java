@@ -208,7 +208,7 @@ public class NewbieManager {
                     if (player != null && player.isOnline()) {
                         int currentTime = readData(player);
 
-                        if (currentTime < 1) {
+                        if (currentTime >= 1) {
                             int newTime = currentTime - 1;
                             saveData(player, newTime);
                         } else {
