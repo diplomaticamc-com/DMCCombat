@@ -30,7 +30,7 @@ public class NewbieProtectionListener implements Listener {
                 player.sendMessage(ChatColor.GREEN + "You are under newbie protection for " + timeMsg + "!");
                 player.sendMessage(ChatColor.GREEN + "Use /protectiontime to check your time and /newbie disable to end it early");
             }, 50L);
-        } else {
+        } else { //if player has played before...
             manager.playerJoined(player.getUniqueId());
             if (manager.isProtected(player)) {
                 long remaining = manager.getRemainingMinutes(player);

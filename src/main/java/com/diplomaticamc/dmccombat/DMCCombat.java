@@ -14,8 +14,6 @@ import com.diplomaticamc.dmccombat.commands.CombatTagCommand;
 import com.diplomaticamc.dmccombat.commands.SpawnProtPrefCommand;
 import com.diplomaticamc.dmccombat.config.Config;
 import com.diplomaticamc.dmccombat.util.Translation;
-import com.palmergames.bukkit.towny.exceptions.KeyAlreadyRegisteredException;
-import com.palmergames.bukkit.towny.object.metadata.IntegerDataField;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -40,12 +38,6 @@ public final class DMCCombat extends JavaPlugin {
         return combatHandler;
     }
 
-    //newbie protection metadata
-    private static String keyname = "dmccombat_newbieprotection";
-    private static int defaultVal = 60;
-    private static String label = "Newbie Protection";
-    private static IntegerDataField newbieMetaData = new IntegerDataField(keyname, defaultVal, label);
-
     @Override
     public void onEnable() {
         instance = this;
@@ -56,19 +48,11 @@ public final class DMCCombat extends JavaPlugin {
         Config.init(getConfig());
         saveConfig();
         newbieManager = new NewbieManager(this);
-        newbieManager.init(newbieMetaData);
+        newbieManager.init();
 
         setupListeners();
         setupCommands();
         runTasks();
-
-
-        //newbie prot initialize towny metadata
-        try {
-
-        } catch (KeyAlreadyRegisteredException e) {
-
-        }
 
         log.info("DMCCombat has been loaded.");
     }
@@ -104,7 +88,7 @@ public final class DMCCombat extends JavaPlugin {
 
         if (newbieManager != null) {
             newbieManager.shutdown();
-            newbieManager.init(newbieMetaData);
+            newbieManager.init();
         }
 
         // Clear existing boss bars before restarting the task

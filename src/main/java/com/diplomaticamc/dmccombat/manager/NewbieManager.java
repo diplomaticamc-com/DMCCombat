@@ -1,261 +1,213 @@
 package com.diplomaticamc.dmccombat.manager;
 
 import com.diplomaticamc.dmccombat.DMCCombat;
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.exceptions.KeyAlreadyRegisteredException;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
 import com.palmergames.bukkit.towny.object.metadata.IntegerDataField;
 import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.UUID;
 
  // handles loading, saving and querying of newbie protection data
 
 public class NewbieManager {
     private final DMCCombat plugin;
-    private File dataFile;
-    private FileConfiguration dataConfig;
-    private long protectionTimeMinutes;
-    private String protectionMessage;
-    private String blockedMessage;
-    private String endMessage;
 
-    // Stores remaining protection time in minutes for each player
-//    private final Map<UUID, Long> protectionMap = new HashMap<>();
-    // Tracks the last login timestamp (ms) for online players
-//    private final Map<UUID, Long> loginTimes = new HashMap<>();
-    private final HashSet<UUID> protectedList = new HashSet<>();
+    //newbie protection metadata
+    private static String keyname = "dmccombat_newbieprotection";
+    private static int defaultVal = 60;
+    private static String label = "Newbie Protection";
+    private static IntegerDataField newbieMetaData = new IntegerDataField(keyname, defaultVal, label);
 
-    // Task that checks for expired protections
+    // List that contains online users to deduct noob prot from
+    private final HashSet<Player> protectedList = new HashSet<>();
+
+    // deduction counter task
     private BukkitTask expiryTask;
 
     public NewbieManager(DMCCombat plugin) {
         this.plugin = plugin;
     }
 
-    public void init(IntegerDataField idf) {
-        loadConfig();
-//        createDataFile();
-        loadData();
+    public void init() {
+//        loadConfig();
         startExpiryTask();
+        registerMetaData();
     }
 
     public void shutdown() {
         if (expiryTask != null) {
             expiryTask.cancel();
         }
-        saveData();
     }
 
-    private void loadConfig() {
-        FileConfiguration config = plugin.getConfig();
-        protectionTimeMinutes = config.getLong("protection-time-minutes", 720);
-        protectionMessage = ChatColor.translateAlternateColorCodes('&',
-                config.getString("protection-message",
-                        "&aYou are under newbie protection for %minutes% more minutes!"));
-        blockedMessage = ChatColor.translateAlternateColorCodes('&',
-                config.getString("attack-blocked-message",
-                        "&cYou cannot fight while protected!"));
-        endMessage = ChatColor.translateAlternateColorCodes('&',
-                config.getString("protection-ended-message",
-                        "&eYour newbie protection has ended."));
+    public void registerMetaData() {
+        //newbie prot initialize towny metadata. i have no idea if this will work when the plugin starts up
+        try {
+            TownyAPI.getInstance().registerCustomDataField(newbieMetaData);
+        } catch (KeyAlreadyRegisteredException e) {
+            plugin.getLogger().info("newbieMetaData failed to register!");
+            plugin.getLogger().warning(e.getMessage());
+        }
+        plugin.getLogger().info("newbieMetaData successfully registered to Towny!");
     }
 
-//    private void createDataFile() {
-//        dataFile = new File(plugin.getDataFolder(), "players.yml");
-//        if (!dataFile.exists()) {
-//            try {
-//                dataFile.createNewFile();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        dataConfig = YamlConfiguration.loadConfiguration(dataFile);
+//    private void loadConfig() {
+//        FileConfiguration config = plugin.getConfig();
+//        protectionTimeMinutes = config.getLong("newbie_protection.protection-time", 12400);
+//        protectionMessage = ChatColor.translateAlternateColorCodes('&',
+//                config.getString("newbie_protection.protection-message",
+//                        "&aYou are under newbie protection for %minutes% more minutes!"));
+//        blockedMessage = ChatColor.translateAlternateColorCodes('&',
+//                config.getString("newbie_protection.attack-blocked-message",
+//                        "&cYou cannot fight while protected!"));
+//        endMessage = ChatColor.translateAlternateColorCodes('&',
+//                config.getString("newbie_protection.protection-ended-message",
+//                        "&eYour newbie protection has ended."));
 //    }
 
-    private void loadData() {
-        for (String key : dataConfig.getKeys(false)) {
-//            protectionMap.put(UUID.fromString(key), dataConfig.getLong(key + ".time"));
+    //CRUD
+    public int readData(Player player) {
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident != null) {
+            if (resident.hasMeta(newbieMetaData.getKey())) {
+                CustomDataField placeholderData = resident.getMetadata(newbieMetaData.getKey());
+
+                if (placeholderData instanceof IntegerDataField) {
+                    IntegerDataField newData = (IntegerDataField) placeholderData;
+                    return newData.getValue();
+                }
+            }
         }
+        return 0; //default
     }
 
+    public void saveData(Player player, int updatedData) {
+        Resident resident = TownyAPI.getInstance().getResident(player);
 
-    public void saveData() {
-        // Clear old entries
-//        for (String key : new HashSet<>(dataConfig.getKeys(false))) {
-//            if (!protectionMap.containsKey(UUID.fromString(key))) {
-//                dataConfig.set(key, null);
-//            }
-//        }
-//
-//        for (UUID uuid : protectionMap.keySet()) {
-//            String path = uuid.toString();
-//            dataConfig.set(path + ".time", protectionMap.get(uuid));
-//            String name = Bukkit.getOfflinePlayer(uuid).getName();
-//            if (name != null) {
-//                dataConfig.set(path + ".name", name);
-//            }
-//        }
-//        try {
-//            dataConfig.save(dataFile);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        if (resident.hasMeta(newbieMetaData.getKey())) {
+            CustomDataField placeholderData = resident.getMetadata(newbieMetaData.getKey());
+
+            if (placeholderData instanceof IntegerDataField) {
+                IntegerDataField newData = (IntegerDataField) placeholderData;
+                newData.setValue(updatedData);
+            }
+        }
     }
 
     public void addProtection(Player player) {
         if (player != null) {
-            addProtection(player.getUniqueId());
+            Resident resident = TownyAPI.getInstance().getResident(player);
+
+            if (resident != null) {
+                resident.addMetaData(newbieMetaData.clone());
+            } else {
+                plugin.getLogger().warning("Failed to add newbie protection to " + player.getName() + "!");
+                plugin.getLogger().warning("Error: Resident object returns as null");
+            }
         }
     }
 
-    public void addProtection(UUID uuid) {
-//        protectionMap.put(uuid, protectionTimeMinutes);
-//        loginTimes.put(uuid, System.currentTimeMillis());
+    public void removeProtection(Player player) {
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident != null) {
+            resident.removeMetaData(newbieMetaData);
+        } else {
+            plugin.getLogger().warning("Failed to remove newbie protection to " + player.getName() + "!");
+            plugin.getLogger().warning("Error: Resident object returns as null");
+        }
     }
 
-    public void removeProtection(UUID uuid) {
-//        protectionMap.remove(uuid);
-//        loginTimes.remove(uuid);
-//        if (dataConfig != null) {
-//            dataConfig.set(uuid.toString(), null);
-//        }
+    // online player list deduction function things
+
+    public void playerJoined(Player player) {
+        protectedList.add(player);
     }
 
-    // Called when a protected player joins
-    // Starts tracking their session start time (used to subtract playtime on quit)
-    public void playerJoined(UUID uuid) {
-//        if (protectionMap.containsKey(uuid)) {
-//            loginTimes.put(uuid, System.currentTimeMillis());
-//        }
-        protectedList.add(player.getUniqueId());
+    public void playerQuit(Player player) {
+        protectedList.remove(player);
     }
 
-    // Called when a protected player quits
-    // Subtracts this session’s playtime from their remaining protection
-    // and removes protection entirely if it expires
-    public void playerQuit(UUID uuid) {
-//        Long login = loginTimes.remove(uuid);
-//        if (login != null && protectionMap.containsKey(uuid)) {
-//            long elapsed = (System.currentTimeMillis() - login) / (1000 * 60);
-//            long remaining = protectionMap.get(uuid) - elapsed;
-//            if (remaining <= 0) {
-//                removeProtection(uuid);
-//            } else {
-//                protectionMap.put(uuid, remaining);
-//            }
-//            saveData();
-//        }
+    // the checks
+
+    // returns true if the player still has protection left. uuid is used to check offline players (not like we are ever using that)
+    public boolean isProtected(UUID uuid) {
+        Player player = Bukkit.getPlayer(uuid);
+        for (Player v : protectedList) {
+            if (player == v) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public boolean isProtected(Player player) {
-        return isProtected(player.getUniqueId());
+    public String calculatedTimeRemaining(Player player) {
+        //probably want to include translation features in the future for the minutes/hours/seconds --stoffeh
+        double time = readData(player);
+        double timeHour;
+        double timeMinutes;
+        double timeSeconds;
+
+        String formatHour;
+        String formatMinute;
+        String calculatedTime = "0"; //default
+
+        if (time >= 3600)  {
+            //1 hour+ math
+            timeHour = Math.floor(time / 3600);
+            timeMinutes = Math.floor((time % 3600) / 60);
+            if (timeHour <= 1) {
+                formatHour = "hour";
+            } else {
+                formatHour = "hours";
+            }
+            if (timeMinutes <= 1) {
+                formatMinute = "minute";
+            } else {
+                formatMinute = "minutes";
+            }
+            calculatedTime = timeHour + " " + formatHour + " and " + timeMinutes + " " + formatMinute;
+
+        } else if (time < 3600 && time > 60) {
+            //<1 hour math
+            timeMinutes = Math.floor(time / 60);
+            timeSeconds = Math.floor(time % 60);
+            if (timeMinutes <= 1) {
+                formatMinute = "minute";
+            } else {
+                formatMinute = "minutes";
+            }
+            calculatedTime = timeMinutes + " " + formatMinute + " and " + timeSeconds + " seconds";
+
+        } else if (time <= 60) {
+            //<1 minute math
+            calculatedTime = time + " seconds";
+        }
+        return calculatedTime;
     }
 
-    public long getRemainingMinutes(Player player) {
-        return getRemainingMinutes(player.getUniqueId());
-    }
-
-    public String getProtectionMessage(long minutes) {
-        return protectionMessage.replace("%minutes%", String.valueOf(minutes));
-    }
-
-    public String getBlockedMessage() {
-        return blockedMessage;
-    }
-
-    public String calculatedTimeRemaining() {
-        String finalTime;
-        return finalTime;
-    }
-
+    //deduction timer doohickey thing
     private void startExpiryTask() {
-//        expiryTask = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-//            for (UUID uuid : new HashSet<>(loginTimes.keySet())) {
-//                if (isProtected(uuid)) {
-//                    long remaining = getRemainingMinutes(uuid);
-//                    if (remaining <= 0) {
-//                        Player player = Bukkit.getPlayer(uuid);
-//                        if (player != null) {
-//                            player.sendMessage(endMessage);
-//                        }
-//                        removeProtection(uuid);
-//                        saveData();
-//                    }
-//                }
-//            }
-//        }, 1200L, 1200L);
         expiryTask = new BukkitRunnable() {
             public void run() {
-                for (UUID uuid : protectedList) {
-                    Player player = Bukkit.getPlayer(uuid);
+                for (Player player : protectedList) {
                     if (player != null && player.isOnline()) {
+                        int currentTime = readData(player);
+                        int newTime = currentTime - 1;
 
+                        saveData(player, newTime);
                     }
                 }
             }
         }.runTaskTimer(plugin, 20L, 20L);
-    }
-
-    // gets the time (in ms) when the player joined, used to track session length
-//    public Long getJoinTime(UUID uuid) {
-//        return loginTimes.get(uuid);
-//    }
-
-    // same as above but accepts a Player object
-//    public Long getJoinTime(Player player) {
-//        return getJoinTime(player.getUniqueId());
-//    }
-
-    // how many minutes of protection players get by default (from config)
-//    public long getProtectionTimeMinutes() {
-//        return protectionTimeMinutes;
-//    }
-
-    // returns true if the player still has protection left, factoring in time played
-    public boolean isProtected(UUID uuid) {
-//        Long remaining = protectionMap.get(uuid);
-//        if (remaining == null || remaining <= 0) return false;
-//        Long login = loginTimes.get(uuid);
-//        if (login != null) {
-//            long elapsed = (System.currentTimeMillis() - login) / (1000 * 60);
-//            return remaining - elapsed > 0;
-//        }
-//        return remaining > 0;
-        return false;
-    }
-
-    // calculates how many minutes of protection are left for the player right now
-    public long getRemainingMinutes(UUID uuid) {
-//        Long remaining = protectionMap.get(uuid);
-//        if (remaining == null) return 0;
-//        Long login = loginTimes.get(uuid);
-//        if (login != null) {
-//            long elapsed = (System.currentTimeMillis() - login) / (1000 * 60);
-//            return Math.max(remaining - elapsed, 0);
-//        }
-//        return Math.max(remaining, 0);
-        return 0;
-    }
-
-    // finds an uuid by name (case insensitive) useful for offline players
-    public UUID findUUIDByName(String name) {
-        for (UUID uuid : protectionMap.keySet()) {
-            String stored = Bukkit.getOfflinePlayer(uuid).getName();
-//            if (stored != null && stored.equalsIgnoreCase(name)) {
-//                return uuid;
-//            }
-        }
-        return null;
     }
 }
 

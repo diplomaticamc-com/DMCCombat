@@ -40,6 +40,7 @@ public class NewbieCommand implements TabExecutor {
             sender.sendMessage(ChatColor.AQUA + "Newbie Protection Commands:");
             sender.sendMessage(ChatColor.YELLOW + "/newbie disable" + ChatColor.GRAY + " - Disable your protection early");
             sender.sendMessage(ChatColor.YELLOW + "/newbie protectiontime" + ChatColor.GRAY + " - Check your remaining protection time");
+
             if (sender.hasPermission("newbie.admin")) {
                 sender.sendMessage(ChatColor.YELLOW + "/newbie disable <player>" + ChatColor.GRAY + " - Disable protection for player (admin)");
                 sender.sendMessage(ChatColor.YELLOW + "/newbie reset <player>" + ChatColor.GRAY + " - Reset protection for player (admin)");
@@ -130,6 +131,7 @@ public class NewbieCommand implements TabExecutor {
 
             switch (sub.toLowerCase()) {
                 case "reset":
+
                 case "enable":
                     manager.removeProtection(uuid);
                     manager.addProtection(uuid);
@@ -139,6 +141,7 @@ public class NewbieCommand implements TabExecutor {
                         target.getPlayer().sendMessage(ChatColor.GREEN + "Your newbie protection has been reset by an admin.");
                     }
                     break;
+
                 case "disable":
                     manager.removeProtection(uuid);
                     manager.saveData();
@@ -148,6 +151,7 @@ public class NewbieCommand implements TabExecutor {
                         target.getPlayer().sendMessage(ChatColor.RED + "Your newbie protection has been disabled by an admin.");
                     }
                     break;
+
                 case "protectiontime":
                     long remain = manager.getRemainingMinutes(uuid);
                     if (!manager.isProtected(uuid)) {

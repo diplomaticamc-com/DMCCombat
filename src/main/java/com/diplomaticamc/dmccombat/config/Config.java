@@ -8,10 +8,11 @@ public class Config {
         config.addDefault("ender_pearl_cooldown_ticks", 240);
         config.addDefault("golden_apple_cooldown_ticks",100);
         config.addDefault("riptide_in_combat_cooldown_ticks",400);
-        config.addDefault("protection-time-minutes", 720);
-        config.addDefault("protection-message", "&aYou are under newbie protection for %minutes% more minutes!");
-        config.addDefault("attack-blocked-message", "&cYou cannot fight while protected!");
-        config.addDefault("protection-ended-message", "&eYour newbie protection has ended");
+
+        config.addDefault("newbie_protection.protection-time", 12400);
+        config.addDefault("newbie_protection.protection-message", "&aYou are under newbie protection for %minutes% more minutes!");
+        config.addDefault("newbie_protection.attack-blocked-message", "&cYou cannot fight while protected!");
+        config.addDefault("newbie_protection.protection-ended-message", "&eYour newbie protection has ended");
 
         config.addDefault("reload-message", "&aConfiguration reloaded");
 
