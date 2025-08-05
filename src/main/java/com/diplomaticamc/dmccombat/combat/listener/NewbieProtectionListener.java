@@ -21,27 +21,22 @@ public class NewbieProtectionListener implements Listener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+
         if (!player.hasPlayedBefore()) {
             manager.addProtection(player);
-            manager.saveData();
+            manager.addProtectedList(player);
+
             DMCCombat.getInstance().getServer().getScheduler().runTaskLater(DMCCombat.getInstance(), () -> {
-                long total = manager.getProtectionTimeMinutes();
-                String timeMsg = total >= 60 ? (total / 60 + " hours") : (total + " minutes");
-                player.sendMessage(ChatColor.GREEN + "You are under newbie protection for " + timeMsg + "!");
-                player.sendMessage(ChatColor.GREEN + "Use /protectiontime to check your time and /newbie disable to end it early");
+                player.sendMessage(ChatColor.GREEN + "You are protected from players for " + manager.calculatedTimeRemaining(player) + "!");
+                player.sendMessage(ChatColor.GREEN + "Use /protectiontime to check remaining protection time.");
             }, 50L);
         } else { //if player has played before...
-            manager.playerJoined(player.getUniqueId());
             if (manager.isProtected(player)) {
-                long remaining = manager.getRemainingMinutes(player);
+                manager.addProtectedList(player);
+
                 DMCCombat.getInstance().getServer().getScheduler().runTaskLater(DMCCombat.getInstance(), () -> {
-                    if (remaining >= 60) {
-                        long hours = remaining / 60;
-                        player.sendMessage(ChatColor.GREEN + "You have " + hours + (hours == 1 ? " hour" : " hours") + " of newbie protection remaining");
-                    } else {
-                        player.sendMessage(ChatColor.GREEN + "You have " + remaining + (remaining == 1 ? " minute" : " minutes") + " of newbie protection remaining");
-                    }
-                    player.sendMessage(ChatColor.GREEN + "Use /protectiontime to check your time and /newbie disable to end it early");
+                    player.sendMessage(ChatColor.GREEN + "You are protected from players for " + manager.calculatedTimeRemaining(player) + "!");
+                    player.sendMessage(ChatColor.GREEN + "Use /protectiontime to check remaining protection time.");
                 }, 50L);
             }
         }
@@ -49,7 +44,10 @@ public class NewbieProtectionListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        manager.playerQuit(event.getPlayer().getUniqueId());
+        Player player = event.getPlayer();
+        if (manager.isProtected(player)) {
+            manager.removeProtectedList(player);
+        }
     }
 
     @EventHandler

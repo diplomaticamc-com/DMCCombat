@@ -1,6 +1,7 @@
 package com.diplomaticamc.dmccombat.manager;
 
 import com.diplomaticamc.dmccombat.DMCCombat;
+import com.diplomaticamc.dmccombat.combat.listener.NewbieProtectionListener;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.exceptions.KeyAlreadyRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -13,8 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.UUID;
 
  // handles loading, saving and querying of newbie protection data
 
@@ -23,12 +24,14 @@ public class NewbieManager {
 
     //newbie protection metadata
     private static String keyname = "dmccombat_newbieprotection";
-    private static int defaultVal = 60;
+    private static int defaultVal = 12400;
     private static String label = "Newbie Protection";
     private static IntegerDataField newbieMetaData = new IntegerDataField(keyname, defaultVal, label);
 
     // List that contains online users to deduct noob prot from
     private final HashSet<Player> protectedList = new HashSet<>();
+    // List that contains users pending cancellation of newbie protection
+    private final HashMap<Player, Integer> cancelList = new HashMap<>();
 
     // deduction counter task
     private BukkitTask expiryTask;
@@ -62,7 +65,7 @@ public class NewbieManager {
 
 //    private void loadConfig() {
 //        FileConfiguration config = plugin.getConfig();
-//        protectionTimeMinutes = config.getLong("newbie_protection.protection-time", 12400);
+//        protectionTime = config.getLong("newbie_protection.protection-time", 12400);
 //        protectionMessage = ChatColor.translateAlternateColorCodes('&',
 //                config.getString("newbie_protection.protection-message",
 //                        "&aYou are under newbie protection for %minutes% more minutes!"));
@@ -128,33 +131,36 @@ public class NewbieManager {
 
     // online player list deduction function things
 
-    public void playerJoined(Player player) {
+    public void addProtectedList(Player player) {
         protectedList.add(player);
     }
 
-    public void playerQuit(Player player) {
+    public void removeProtectedList(Player player) {
         protectedList.remove(player);
     }
 
     // the checks
 
     // returns true if the player still has protection left. uuid is used to check offline players (not like we are ever using that)
-    public boolean isProtected(UUID uuid) {
-        Player player = Bukkit.getPlayer(uuid);
-        for (Player v : protectedList) {
-            if (player == v) {
-                return true;
-            }
+    public boolean isProtected(Player player) {
+//        for (Player v : protectedList) {
+//            if (player == v) {
+//                return true;
+//            }
+//        }
+        Resident resident = TownyAPI.getInstance().getResident(player);
+        if (resident != null) {
+            return resident.hasMeta(newbieMetaData.getKey());
         }
         return false;
     }
 
     public String calculatedTimeRemaining(Player player) {
         //probably want to include translation features in the future for the minutes/hours/seconds --stoffeh
-        double time = readData(player);
-        double timeHour;
-        double timeMinutes;
-        double timeSeconds;
+        int time = readData(player);
+        int timeHour;
+        int timeMinutes;
+        int timeSeconds;
 
         String formatHour;
         String formatMinute;
@@ -162,8 +168,8 @@ public class NewbieManager {
 
         if (time >= 3600)  {
             //1 hour+ math
-            timeHour = Math.floor(time / 3600);
-            timeMinutes = Math.floor((time % 3600) / 60);
+            timeHour = (int) Math.floor((double) time / 3600);
+            timeMinutes = (int) Math.floor((double) (time % 3600) / 60);
             if (timeHour <= 1) {
                 formatHour = "hour";
             } else {
@@ -178,8 +184,8 @@ public class NewbieManager {
 
         } else if (time < 3600 && time > 60) {
             //<1 hour math
-            timeMinutes = Math.floor(time / 60);
-            timeSeconds = Math.floor(time % 60);
+            timeMinutes = (int) Math.floor((double) time / 60);
+            timeSeconds = (int) Math.floor(time % 60);
             if (timeMinutes <= 1) {
                 formatMinute = "minute";
             } else {
@@ -201,14 +207,26 @@ public class NewbieManager {
                 for (Player player : protectedList) {
                     if (player != null && player.isOnline()) {
                         int currentTime = readData(player);
-                        int newTime = currentTime - 1;
 
-                        saveData(player, newTime);
+                        if (currentTime < 1) {
+                            int newTime = currentTime - 1;
+                            saveData(player, newTime);
+                        } else {
+                            removeProtection(player);
+                            ProtectionEnded(player);
+                            protectedList.remove(player);
+                        }
                     }
                 }
             }
         }.runTaskTimer(plugin, 20L, 20L);
     }
+
+    //chat things
+    public void ProtectionEnded(Player player) {
+        player.sendMessage(ChatColor.GOLD + "Your newbie protection has ended. You are now vulnerable to attacks by other players!");
+    }
+
 }
 
 
