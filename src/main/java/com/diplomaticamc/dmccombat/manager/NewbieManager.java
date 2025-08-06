@@ -7,6 +7,7 @@ import com.palmergames.bukkit.towny.exceptions.KeyAlreadyRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
 import com.palmergames.bukkit.towny.object.metadata.IntegerDataField;
+import it.unimi.dsi.fastutil.Hash;
 import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,22 +17,27 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
- // handles loading, saving and querying of newbie protection data
+// handles loading, saving and querying of newbie protection data
 
 public class NewbieManager {
     private final DMCCombat plugin;
 
+    private static long protectionTime;
+    private static long cancelVal;
+
     //newbie protection metadata
     private static String keyname = "dmccombat_newbieprotection";
-    private static int defaultVal = 12400;
     private static String label = "Newbie Protection";
-    private static IntegerDataField newbieMetaData = new IntegerDataField(keyname, defaultVal, label);
+    private static IntegerDataField newbieMetaData;
 
     // List that contains online users to deduct noob prot from
     private final HashSet<Player> protectedList = new HashSet<>();
     // List that contains users pending cancellation of newbie protection
-    private final HashMap<Player, Integer> cancelList = new HashMap<>();
+    private final HashMap<Player, Long> cancelList = new HashMap<>();
+
 
     // deduction counter task
     private BukkitTask expiryTask;
@@ -41,7 +47,7 @@ public class NewbieManager {
     }
 
     public void init() {
-//        loadConfig();
+        loadConfig();
         startExpiryTask();
         registerMetaData();
     }
@@ -53,7 +59,7 @@ public class NewbieManager {
     }
 
     public void registerMetaData() {
-        //newbie prot initialize towny metadata. i have no idea if this will work when the plugin starts up
+        //newbie prot initialize towny metadata
         try {
             TownyAPI.getInstance().registerCustomDataField(newbieMetaData);
         } catch (KeyAlreadyRegisteredException e) {
@@ -63,19 +69,13 @@ public class NewbieManager {
         plugin.getLogger().info("newbieMetaData successfully registered to Towny!");
     }
 
-//    private void loadConfig() {
-//        FileConfiguration config = plugin.getConfig();
-//        protectionTime = config.getLong("newbie_protection.protection-time", 12400);
-//        protectionMessage = ChatColor.translateAlternateColorCodes('&',
-//                config.getString("newbie_protection.protection-message",
-//                        "&aYou are under newbie protection for %minutes% more minutes!"));
-//        blockedMessage = ChatColor.translateAlternateColorCodes('&',
-//                config.getString("newbie_protection.attack-blocked-message",
-//                        "&cYou cannot fight while protected!"));
-//        endMessage = ChatColor.translateAlternateColorCodes('&',
-//                config.getString("newbie_protection.protection-ended-message",
-//                        "&eYour newbie protection has ended."));
-//    }
+    private void loadConfig() {
+        FileConfiguration config = plugin.getConfig();
+        protectionTime = config.getLong("newbie_protection.protection-time", 43200);
+        cancelVal = config.getLong("newbie_protection.cancel_duration", 10);
+
+        newbieMetaData =  new IntegerDataField(keyname, (int) protectionTime, label);
+    }
 
     //CRUD
     public int readData(Player player) {
@@ -139,18 +139,33 @@ public class NewbieManager {
         protectedList.remove(player);
     }
 
+    // cancellation deduction function things
+
+    public void addCancelList(Player player) {
+        cancelList.put(player, cancelVal);
+    }
+
+    public void removeCancelList(Player player) {
+        cancelList.remove(player);
+    }
+
     // the checks
 
-    // returns true if the player still has protection left. uuid is used to check offline players (not like we are ever using that)
+    // returns true if the player still has protection left
     public boolean isProtected(Player player) {
-//        for (Player v : protectedList) {
-//            if (player == v) {
-//                return true;
-//            }
-//        }
         Resident resident = TownyAPI.getInstance().getResident(player);
+
         if (resident != null) {
             return resident.hasMeta(newbieMetaData.getKey());
+        }
+        return false;
+    }
+
+    //returns true if the player has tried to cancel their newbie protection via /newbie disable
+    public boolean isCancelPending(Player player) {
+        for (Map.Entry<Player, Long> entry : cancelList.entrySet()) {
+            Player matchedPlayer = entry.getKey();
+            return matchedPlayer == player;
         }
         return false;
     }
@@ -204,18 +219,34 @@ public class NewbieManager {
     private void startExpiryTask() {
         expiryTask = new BukkitRunnable() {
             public void run() {
+                //Newbie protection deduction
                 for (Player player : protectedList) {
                     if (player != null && player.isOnline()) {
                         int currentTime = readData(player);
 
                         if (currentTime >= 1) {
-                            int newTime = currentTime - 1;
-                            saveData(player, newTime);
+                            saveData(player, currentTime - 1);
                         } else {
                             removeProtection(player);
                             ProtectionEnded(player);
                             protectedList.remove(player);
                         }
+                    }
+                }
+                //Cancel list deduction
+                for (Map.Entry<Player, Long> entry : cancelList.entrySet()) {
+                    Player player = entry.getKey();
+                    long currentTime = entry.getValue();
+
+                    if (player != null && player.isOnline()) {
+                        if (currentTime >= 1) {
+                            cancelList.put(player, currentTime - 1);
+                        } else {
+                            cancelList.remove(player);
+                            CancelEnded(player);
+                        }
+                    } else {
+                        cancelList.remove(player);
                     }
                 }
             }
@@ -225,6 +256,9 @@ public class NewbieManager {
     //chat things
     public void ProtectionEnded(Player player) {
         player.sendMessage(ChatColor.GOLD + "Your newbie protection has ended. You are now vulnerable to attacks by other players!");
+    }
+    public void CancelEnded(Player player) {
+        player.sendMessage(ChatColor.RED + "Your request to disable newbie protection has expired.");
     }
 
 }

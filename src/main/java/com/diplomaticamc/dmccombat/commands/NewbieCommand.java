@@ -166,7 +166,7 @@ public class NewbieCommand implements TabExecutor {
     // Command functions
 
     private boolean helpCommand(CommandSender sender) {
-        sender.sendMessage(ChatColor.AQUA + "Newbie Protection Commands:");
+        sender.sendMessage(ChatColor.GRAY + "[" + ChatColor.LIGHT_PURPLE + "DMC" + ChatColor.GRAY + "] " + ChatColor.WHITE + "Newbie Protection Help:");
         sender.sendMessage(ChatColor.YELLOW + "/newbie disable" + ChatColor.GRAY + " - Disable your protection early");
         sender.sendMessage(ChatColor.YELLOW + "/newbie protectiontime" + ChatColor.GRAY + " - Check your remaining protection time");
 
@@ -191,12 +191,23 @@ public class NewbieCommand implements TabExecutor {
     private boolean disableCommand(Player player) {
         if (!manager.isProtected(player)) {
             player.sendMessage(ChatColor.RED + "You are not under newbie protection.");
-            return true;
+        } else {
+            //if the player is protected...
+            if (manager.isCancelPending(player)) {
+                //if the player has already run /newbie disable once
+                manager.removeProtection(player);
+                manager.removeProtectedList(player);
+                manager.removeCancelList(player);
+                player.sendMessage(ChatColor.YELLOW + "You have ended your newbie protection early. You are now vulnerable to attacks by other players!");
+            } else {
+                //...otherwise..
+                manager.addCancelList(player);
+                player.sendMessage(ChatColor.GOLD + "Are you sure you want to disable your newbie protection?");
+                player.sendMessage(ChatColor.WHITE + "Disabling newbie protection early leaves you vulnerable to attacks by other players!");
+                player.sendMessage(ChatColor.WHITE + "If a player asks you to disable protection, you may be killed and lose your items upon disabling!");
+                player.sendMessage(ChatColor.GOLD + "To confirm the disabling of newbie protection, use " + ChatColor.WHITE + "/newbie disable " + ChatColor.GOLD + "again.");
+            }
         }
-        // To be updated with a proper pending cancellation system!
-        manager.removeProtection(player);
-        manager.removeProtectedList(player);
-        player.sendMessage(ChatColor.YELLOW + "You have ended your newbie protection early.");
         return true;
     }
 
