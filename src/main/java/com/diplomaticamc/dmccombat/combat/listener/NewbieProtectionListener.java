@@ -2,6 +2,7 @@ package com.diplomaticamc.dmccombat.combat.listener;
 
 import com.diplomaticamc.dmccombat.DMCCombat;
 import com.diplomaticamc.dmccombat.manager.NewbieManager;
+import com.palmergames.bukkit.towny.event.resident.NewResidentEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,15 +23,7 @@ public class NewbieProtectionListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        if (!player.hasPlayedBefore()) {
-            manager.addProtection(player);
-            manager.addProtectedList(player);
-
-            DMCCombat.getInstance().getServer().getScheduler().runTaskLater(DMCCombat.getInstance(), () -> {
-                player.sendMessage(ChatColor.GREEN + "You are protected from players for " + manager.calculatedTimeRemaining(player) + "!");
-                player.sendMessage(ChatColor.GREEN + "Use /protectiontime to check remaining protection time.");
-            }, 50L);
-        } else { //if player has played before...
+        if (player.hasPlayedBefore()) {
             if (manager.isProtected(player)) {
                 manager.addProtectedList(player);
 
@@ -40,6 +33,28 @@ public class NewbieProtectionListener implements Listener {
                 }, 50L);
             }
         }
+    }
+
+    @EventHandler
+    public void onResidentRegister(NewResidentEvent event) {
+        Player player = event.getResident().getPlayer();
+        DMCCombat.getInstance().getServer().getScheduler().runTaskLater(DMCCombat.getInstance(), () -> {
+            if (player != null) {
+                if (player.isOnline()) {
+                    manager.addProtection(player);
+                    manager.addProtectedList(player);
+
+                    player.sendMessage(ChatColor.GREEN + "You are protected from players for " + manager.calculatedTimeRemaining(player) + "!");
+                    player.sendMessage(ChatColor.GREEN + "Use /protectiontime to check remaining protection time.");
+                } else {
+                    manager.addProtection(player);
+                }
+            } else {
+                DMCCombat.getInstance().getLogger().warning("Unable to add newbie protection to " + event.getResident().getName() + "! Retrieving the player from onResidentRegister returns as null!");
+            }
+        }, 50L);
+        // this may result in a period of time between player joining and being registered to towny where
+        // the player is vulnerable to attacks and is not protected by newbie prot -stoffeh
     }
 
     @EventHandler
