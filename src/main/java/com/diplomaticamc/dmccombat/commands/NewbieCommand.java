@@ -2,6 +2,7 @@ package com.diplomaticamc.dmccombat.commands;
 
 import com.diplomaticamc.dmccombat.DMCCombat;
 import com.diplomaticamc.dmccombat.manager.NewbieManager;
+import com.palmergames.bukkit.towny.TownyAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -56,34 +57,15 @@ public class NewbieCommand implements TabExecutor {
             String sub = args[0];
             String targetName = args[1];
 
-            Player target = Bukkit.getPlayerExact(targetName);
-            if (target == null) {
-                // Fall back to a case-insensitive search for an online player
-                target = Bukkit.getPlayer(targetName);
-            }
-//            OfflinePlayer target;
-//
-//            if (targetPlayer != null) {
-//                target = targetPlayer;
-//            } else {
-//                target = Bukkit.getOfflinePlayer(targetName);
-//
-//                if (!target.hasPlayedBefore()) {
-//                    // Try case-insensitive lookup among known offline players
-//                    for (OfflinePlayer op : Bukkit.getOfflinePlayers()) {
-//                        String name = op.getName();
-//
-//                        if (name != null && name.equalsIgnoreCase(targetName)) {
-//                            target = op;
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
+            Player target = null;
+            Player query = Bukkit.getPlayerExact(targetName);
 
-            // if the player has never joined before and isnt online, UUID may be invalid
-            if (target == null || (!target.hasPlayedBefore())) {
-                sender.sendMessage(ChatColor.RED + "Player not found.");
+            if (query != null) {
+                if (TownyAPI.getInstance().getResident(query) != null) {
+                    target = query;
+                }
+            } else {
+                sender.sendMessage(ChatColor.RED + "Unable to find " + targetName + ". Are you sure this player is online?");
                 return true;
             }
 
@@ -102,6 +84,7 @@ public class NewbieCommand implements TabExecutor {
                     sender.sendMessage(ChatColor.GREEN + "Newbie protection enabled for " + target.getName());
                     if (target.isOnline()) {
                         target.getPlayer().sendMessage(ChatColor.GREEN + "Your newbie protection has been reset by an admin.");
+                        target.getPlayer().sendMessage(ChatColor.GREEN + "You have acquired the power of " + ChatColor.WHITE + "Newbie Protection" + ChatColor.GREEN + "! You are protected from damage by players for a short period of time!");
                         manager.addProtectedList(target);
                     }
                     break;
@@ -113,6 +96,7 @@ public class NewbieCommand implements TabExecutor {
                     if (target.isOnline()) {
                         manager.removeProtectedList(target);
                         target.getPlayer().sendMessage(ChatColor.RED + "Your newbie protection has been disabled by an admin.");
+                        target.getPlayer().sendMessage(ChatColor.RED + "You have lost the power of Newbie Protection! You are now vulnerable to attacks by other players!");
                     } else {
 
                     }
@@ -166,17 +150,17 @@ public class NewbieCommand implements TabExecutor {
     // Command functions
 
     private boolean helpCommand(CommandSender sender) {
-        sender.sendMessage(ChatColor.GRAY + "[" + ChatColor.LIGHT_PURPLE + "DMC" + ChatColor.GRAY + "] " + ChatColor.WHITE + "Newbie Protection Help:");
-        sender.sendMessage(ChatColor.YELLOW + "/newbie disable" + ChatColor.GRAY + " - Disable your protection early");
-        sender.sendMessage(ChatColor.YELLOW + "/newbie protectiontime" + ChatColor.GRAY + " - Check your remaining protection time");
+        sender.sendMessage(ChatColor.GRAY + "[" + ChatColor.LIGHT_PURPLE + "DMC" + ChatColor.GRAY + "] " + ChatColor.YELLOW + "Newbie Protection Help:");
+        sender.sendMessage(ChatColor.GRAY + "/newbie disable" + ChatColor.GOLD + " : Disable your protection early");
+        sender.sendMessage(ChatColor.GRAY + "/newbie protectiontime" + ChatColor.GOLD + " : Check your remaining protection time");
 
         if (sender.hasPermission("newbie.admin")) {
-            sender.sendMessage(ChatColor.AQUA + "Admin Commands:");
-            sender.sendMessage(ChatColor.YELLOW + "/newbie disable <player>" + ChatColor.GRAY + " - Disable protection for player (admin)");
-//                sender.sendMessage(ChatColor.YELLOW + "/newbie reset <player>" + ChatColor.GRAY + " - Reset protection for player (admin)");
-            sender.sendMessage(ChatColor.YELLOW + "/newbie enable <player>" + ChatColor.GRAY + " - Enable protection for player (admin)");
-            sender.sendMessage(ChatColor.YELLOW + "/newbie protectiontime <player>" + ChatColor.GRAY + " - Check another player's protection time");
-//                sender.sendMessage(ChatColor.YELLOW + "/newbie reload" + ChatColor.GRAY + " - Reload the plugin configuration");
+            sender.sendMessage(" ");
+            sender.sendMessage(ChatColor.GRAY + "/newbie disable <player>" + ChatColor.GOLD + " : Disable protection for player (admin)");
+//                sender.sendMessage(ChatColor.GRAY + "/newbie reset <player>" + ChatColor.GOLD + " : Reset protection for player (admin)");
+            sender.sendMessage(ChatColor.GRAY + "/newbie enable <player>" + ChatColor.GOLD + " : Enable protection for player (admin)");
+            sender.sendMessage(ChatColor.GRAY + "/newbie protectiontime <player>" + ChatColor.GOLD + " : Check another player's protection time");
+//                sender.sendMessage(ChatColor.GRAY + "/newbie reload" + ChatColor.GOLD + " : Reload the plugin configuration");
         }
         return true;
     }
@@ -198,14 +182,14 @@ public class NewbieCommand implements TabExecutor {
                 manager.removeProtection(player);
                 manager.removeProtectedList(player);
                 manager.removeCancelList(player);
-                player.sendMessage(ChatColor.YELLOW + "You have ended your newbie protection early. You are now vulnerable to attacks by other players!");
+                player.sendMessage(ChatColor.RED + "You have lost the power of Newbie Protection! You are now vulnerable to attacks by other players!");
             } else {
                 //...otherwise..
                 manager.addCancelList(player);
                 player.sendMessage(ChatColor.GOLD + "Are you sure you want to disable your newbie protection?");
-                player.sendMessage(ChatColor.WHITE + "Disabling newbie protection early leaves you vulnerable to attacks by other players!");
-                player.sendMessage(ChatColor.WHITE + "If a player asks you to disable protection, you may be killed and lose your items upon disabling!");
-                player.sendMessage(ChatColor.GOLD + "To confirm the disabling of newbie protection, use " + ChatColor.WHITE + "/newbie disable " + ChatColor.GOLD + "again.");
+                player.sendMessage(ChatColor.GOLD + "Disabling newbie protection early leaves you vulnerable to attacks by other players!");
+                player.sendMessage(ChatColor.GOLD + "If a player asks you to disable protection, you may be killed and lose your items upon disabling!");
+                player.sendMessage(ChatColor.YELLOW + "To confirm the disabling of newbie protection, use " + ChatColor.GRAY + "/newbie disable " + ChatColor.YELLOW + "again.");
             }
         }
         return true;

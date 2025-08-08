@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class NewbieProtectionListener implements Listener {
 
@@ -32,29 +33,9 @@ public class NewbieProtectionListener implements Listener {
                     player.sendMessage(ChatColor.GREEN + "Use /protectiontime to check remaining protection time.");
                 }, 50L);
             }
+        } else {
+            manager.startRegistryTask(player);
         }
-    }
-
-    @EventHandler
-    public void onResidentRegister(NewResidentEvent event) {
-        Player player = event.getResident().getPlayer();
-        DMCCombat.getInstance().getServer().getScheduler().runTaskLater(DMCCombat.getInstance(), () -> {
-            if (player != null) {
-                if (player.isOnline()) {
-                    manager.addProtection(player);
-                    manager.addProtectedList(player);
-
-                    player.sendMessage(ChatColor.GREEN + "You are protected from players for " + manager.calculatedTimeRemaining(player) + "!");
-                    player.sendMessage(ChatColor.GREEN + "Use /protectiontime to check remaining protection time.");
-                } else {
-                    manager.addProtection(player);
-                }
-            } else {
-                DMCCombat.getInstance().getLogger().warning("Unable to add newbie protection to " + event.getResident().getName() + "! Retrieving the player from onResidentRegister returns as null!");
-            }
-        }, 50L);
-        // this may result in a period of time between player joining and being registered to towny where
-        // the player is vulnerable to attacks and is not protected by newbie prot -stoffeh
     }
 
     @EventHandler
