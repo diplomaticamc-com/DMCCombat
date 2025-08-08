@@ -2,6 +2,7 @@ package com.diplomaticamc.dmccombat.combat.listener;
 
 import com.diplomaticamc.dmccombat.DMCCombat;
 import com.diplomaticamc.dmccombat.manager.NewbieManager;
+import com.palmergames.bukkit.towny.event.resident.NewResidentEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class NewbieProtectionListener implements Listener {
 
@@ -22,15 +24,7 @@ public class NewbieProtectionListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        if (!player.hasPlayedBefore()) {
-            manager.addProtection(player);
-            manager.addProtectedList(player);
-
-            DMCCombat.getInstance().getServer().getScheduler().runTaskLater(DMCCombat.getInstance(), () -> {
-                player.sendMessage(ChatColor.GREEN + "You are protected from players for " + manager.calculatedTimeRemaining(player) + "!");
-                player.sendMessage(ChatColor.GREEN + "Use /protectiontime to check remaining protection time.");
-            }, 50L);
-        } else { //if player has played before...
+        if (player.hasPlayedBefore()) {
             if (manager.isProtected(player)) {
                 manager.addProtectedList(player);
 
@@ -39,6 +33,8 @@ public class NewbieProtectionListener implements Listener {
                     player.sendMessage(ChatColor.GREEN + "Use /protectiontime to check remaining protection time.");
                 }, 50L);
             }
+        } else {
+            manager.startRegistryTask(player);
         }
     }
 

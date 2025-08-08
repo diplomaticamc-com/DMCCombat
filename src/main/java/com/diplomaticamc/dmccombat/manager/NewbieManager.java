@@ -2,6 +2,7 @@ package com.diplomaticamc.dmccombat.manager;
 
 import com.diplomaticamc.dmccombat.DMCCombat;
 import com.diplomaticamc.dmccombat.combat.listener.NewbieProtectionListener;
+import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.exceptions.KeyAlreadyRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -30,7 +31,6 @@ public class NewbieManager {
 
     //newbie protection metadata
     private static String keyname = "dmccombat_newbieprotection";
-    private static String label = "Newbie Protection";
     private static IntegerDataField newbieMetaData;
 
     // List that contains online users to deduct noob prot from
@@ -74,7 +74,7 @@ public class NewbieManager {
         protectionTime = config.getLong("newbie_protection.protection-time", 43200);
         cancelVal = config.getLong("newbie_protection.cancel_duration", 10);
 
-        newbieMetaData =  new IntegerDataField(keyname, (int) protectionTime, label);
+        newbieMetaData =  new IntegerDataField(keyname, (int) protectionTime);
     }
 
     //CRUD
@@ -253,9 +253,38 @@ public class NewbieManager {
         }.runTaskTimer(plugin, 20L, 20L);
     }
 
+    public void startRegistryTask(Player player) {
+        new BukkitRunnable() {
+            int attempts = 0;
+            public void run() {
+                attempts++;
+                Resident resident = TownyAPI.getInstance().getResident(player);
+
+                if (resident != null) {
+                    addProtection(player);
+                    addProtectedList(player);
+                    NewProtection(player);
+                    plugin.getLogger().info("Success adding protection to new player " + player.getName());
+
+                    cancel();
+                }
+                if (attempts >=25) {
+                    cancel();
+                    plugin.getLogger().warning("Failed to add newbie protection to new player! Resident data not found after max attempts!");
+                }
+            }
+        }.runTaskTimer(plugin, 10L, 10L);
+        //NOT ASYNC. This will need to be changed for folia compatibility or to handle multiple players
+    }
+
     //chat things
     public void ProtectionEnded(Player player) {
-        player.sendMessage(ChatColor.GOLD + "Your newbie protection has ended. You are now vulnerable to attacks by other players!");
+        player.sendMessage(ChatColor.RED  + "You have lost the power of Newbie Protection! You are now vulnerable to attacks by other players!");
+
+    }
+    public void NewProtection(Player player) {
+        player.sendMessage(ChatColor.GREEN + "You have acquired the power of " + ChatColor.WHITE + "Newbie Protection" + ChatColor.GREEN + "! You are protected from damage by players for a short period of time!");
+        player.sendMessage(ChatColor.GREEN + "Use /protectiontime to check remaining protection time.");
     }
     public void CancelEnded(Player player) {
         player.sendMessage(ChatColor.RED + "Your request to disable newbie protection has expired.");
